@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWDA Citizen Engagement Orchestrator — User Testing</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bl:#1a3d6e;--bl2:#2558a8;--bl3:#e8f0fb;
+  --tl:#0a6e5f;--tl2:#e4f5f2;
+  --gy1:#f6f8fb;--gy2:#eaeef5;--gy3:#c8d0de;--gy4:#8a96a8;--gy5:#3d4a5c;--gy9:#111827;
+  --rd:#b91c1c;--gn:#15803d;
+  --fn:'IBM Plex Sans',sans-serif;--fm:'IBM Plex Mono',monospace;
+}
+body{font-family:var(--fn);background:transparent;width:100%;min-height:100vh}
+body.phone-focused{overflow:hidden;height:100vh}
+html.phone-focused{overflow:hidden;height:100vh}
+
+.proto-banner{
+  width:100%;background:#1a3d6e;color:#fff;
+  padding:12px 24px;font-size:13px;font-family:var(--fn);
+  font-weight:500;line-height:1.5;position:relative;z-index:10;flex-shrink:0;
+}
+.proto-banner strong{font-weight:700}
+.proto-banner span{opacity:0.75;font-weight:400}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.root{transition:justify-content 0s}
+.panel{transition:opacity 0.3s ease,transform 0.35s cubic-bezier(0.4,0,0.2,1),width 0.35s cubic-bezier(0.4,0,0.2,1);opacity:1;transform:translateX(0);width:auto;overflow:hidden}
+.root.focused .panel{opacity:0;transform:translateX(24px);pointer-events:none;position:absolute;width:0;min-width:0;padding:0;margin:0;overflow:hidden;visibility:hidden}
+
+.focus-stage{display:flex;align-items:flex-start;gap:24px;transition:margin 0.35s cubic-bezier(0.4,0,0.2,1)}
+.root.focused{position:fixed;inset:0;z-index:50;background:var(--gy1);overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center;padding:0;gap:0}
+.root.focused .focus-stage{display:flex;flex-direction:row;align-items:flex-start;justify-content:center;gap:32px;padding:24px 0 24px 0;margin-left:auto;margin-right:auto}
+
+.phone{transition:transform 0.38s cubic-bezier(0.34,1.22,0.64,1),box-shadow 0.35s ease;transform-origin:top center}
+.root.focused .phone{transform:scale(var(--phone-scale,1));transform-origin:top center;box-shadow:0 32px 80px rgba(26,61,110,0.28),0 8px 24px rgba(0,0,0,0.18)}
+
+.phone-close-btn{position:absolute;top:-14px;right:-14px;width:36px;height:36px;border-radius:50%;background:#fff;border:0.5px solid #c8d0de;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#3d4a5c;box-shadow:0 2px 10px rgba(0,0,0,0.18);opacity:0;transform:scale(0.7);transition:opacity 0.25s ease 0.15s,transform 0.25s cubic-bezier(0.34,1.4,0.64,1) 0.15s;pointer-events:none;z-index:20;font-family:var(--fn);line-height:1}
+.phone-close-btn:hover{background:#f0f4fa;color:#1a3d6e}
+
+/* JOURNEY TRACKER */
+.tracker{width:0;min-width:0;opacity:0;overflow:hidden;pointer-events:none;transition:width 0.4s cubic-bezier(0.4,0,0.2,1) 0.1s,opacity 0.35s ease 0.2s,min-width 0.4s cubic-bezier(0.4,0,0.2,1) 0.1s;flex-shrink:0;align-self:flex-start}
+.root.focused .tracker{width:196px;min-width:196px;opacity:1;pointer-events:auto}
+#obs-panel.obs-visible{width:210px!important;min-width:210px!important;opacity:1!important;pointer-events:auto!important}
+.tracker-inner{width:220px;background:#fff;border:0.5px solid var(--gy3);border-radius:16px;padding:20px 18px 18px;box-shadow:0 4px 24px rgba(26,61,110,0.10);max-height:calc(100vh - 48px);overflow-y:auto}
+.tracker-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gy4);margin-bottom:12px}
+.tracker-scenario{font-size:14px;font-weight:700;color:var(--gy9);margin-bottom:14px;padding-bottom:14px;border-bottom:0.5px solid var(--gy3);line-height:1.3}
+.tr-steps{display:flex;flex-direction:column;gap:0}
+.tr-step{display:flex;align-items:flex-start;gap:12px;padding:8px 0;position:relative}
+.tr-step:not(:last-child)::after{content:'';position:absolute;left:11px;top:26px;width:1.5px;height:calc(100% - 10px);background:var(--gy3)}
+.tr-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--gy3);background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.25s ease;position:relative;z-index:1}
+.tr-dot.done{background:var(--tl);border-color:var(--tl)}
+.tr-dot.done::after{content:'';width:5px;height:9px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(42deg) translateY(-1px);display:block}
+.tr-dot.active{border-color:var(--bl2);background:#fff;box-shadow:0 0 0 3px rgba(37,88,168,0.15)}
+.tr-dot.active::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--bl2);display:block}
+.tr-label{font-size:13px;color:#8a96a8;line-height:1.4;padding-top:3px;transition:color 0.2s ease}
+.tr-label.done{color:var(--tl);font-weight:500}
+.tr-label.active{color:var(--gy9);font-weight:600}
+
+.root.focused .phone-close-btn{opacity:1;transform:scale(1);pointer-events:auto}
+
+/* EMAIL NOTIFICATION */
+.email-notif{position:absolute;top:0;left:0;right:0;z-index:50;padding:46px 10px 0;pointer-events:none;transform:translateY(-110%);transition:transform 0.4s cubic-bezier(0.34,1.18,0.64,1)}
+.email-notif.show{transform:translateY(0)}
+.email-notif-inner{background:rgba(248,250,255,0.97);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(26,61,110,0.18),0 1px 4px rgba(0,0,0,0.10);border:0.5px solid rgba(200,208,222,0.7)}
+.email-notif-ico{width:34px;height:34px;border-radius:9px;background:#1a3d6e;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.email-notif-ico svg{width:17px;height:17px;fill:#fff}
+.email-notif-body{flex:1;min-width:0}
+.email-notif-app{font-size:10px;font-weight:600;color:#8a96a8;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:1px}
+.email-notif-title{font-size:12px;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
+.email-notif-msg{font-size:11px;color:#8a96a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.email-notif-time{font-size:10px;color:#8a96a8;flex-shrink:0;align-self:flex-start;padding-top:2px}
+
+.root{display:flex;gap:24px;align-items:flex-start;padding:1.5rem 2rem;min-height:720px;width:100%;justify-content:flex-start}
+
+/* PHONE */
+.phone{width:334px;min-width:334px;background:#1c2333;border-radius:46px;padding:13px;position:relative;flex-shrink:0}
+.screen{width:100%;height:676px;background:#fff;border-radius:34px;overflow:hidden;display:flex;flex-direction:column;border:0.5px solid var(--gy3);position:relative}
+.notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:86px;height:26px;background:#1c2333;border-radius:0 0 16px 16px;z-index:10}
+
+/* STATUS BAR */
+.status-bar{background:var(--bl);padding:30px 18px 0;flex-shrink:0}
+.status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.status-signal{display:flex;gap:2px;align-items:flex-end}
+.sig-bar{width:3px;background:rgba(255,255,255,0.5);border-radius:1px}
+.sig-bar:nth-child(1){height:5px}
+.sig-bar:nth-child(2){height:8px}
+.sig-bar:nth-child(3){height:11px;background:#fff}
+.sig-bar:nth-child(4){height:14px;background:#fff}
+.status-time{font-family:var(--fm);font-size:12px;color:#fff;font-weight:500}
+.status-batt{width:20px;height:10px;border:1px solid rgba(255,255,255,0.6);border-radius:2px;position:relative;display:flex;align-items:center;padding:1px}
+.status-batt::after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:2px;height:5px;background:rgba(255,255,255,0.5);border-radius:1px}
+.batt-fill{width:70%;height:100%;background:#fff;border-radius:1px}
+
+/* AI TRIAGE HOLD CARD */
+.ivr-card.triage{background:linear-gradient(135deg,#1a3d6e 0%,#2558a8 100%);border:none;border-radius:16px;padding:18px 16px;text-align:center;color:#fff}
+.triage-music{font-size:22px;margin-bottom:8px;animation:triage-bounce 0.6s ease-in-out infinite alternate;display:inline-block}
+@keyframes triage-bounce{from{transform:scale(1);opacity:0.85}to{transform:scale(1.18);opacity:1}}
+.triage-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px}
+.triage-sub{font-size:11px;color:rgba(255,255,255,0.65);margin-bottom:12px}
+.triage-dots{display:flex;gap:6px;justify-content:center}
+.triage-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.4);animation:triage-pulse 1.2s ease-in-out infinite}
+.triage-dot:nth-child(2){animation-delay:0.2s}
+.triage-dot:nth-child(3){animation-delay:0.4s}
+.triage-dot:nth-child(4){animation-delay:0.6s}
+@keyframes triage-pulse{0%,80%,100%{background:rgba(255,255,255,0.3);transform:scale(0.85)}40%{background:rgba(255,255,255,1);transform:scale(1.2)}}
+
+/* CALL BANNER */
+.call-banner{background:var(--bl);padding:12px 18px 16px;flex-shrink:0}
+.agency-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.agency-seal{width:30px;height:30px;border-radius:6px;background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center}
+.agency-seal svg{width:18px;height:18px;fill:rgba(255,255,255,0.9)}
+.agency-name{font-size:11px;color:rgba(255,255,255,0.9);font-weight:500;line-height:1.3}
+.agency-sub{font-size:9.5px;color:rgba(255,255,255,0.5);letter-spacing:0.3px}
+.call-status-row{display:flex;align-items:center;justify-content:space-between}
+.call-live-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)}}
+.call-live-text{font-size:10px;color:rgba(255,255,255,0.7);margin-left:5px}
+.call-dur{font-family:var(--fm);font-size:11px;color:rgba(255,255,255,0.6)}
+
+/* WAVE */
+.wave-wrap{display:flex;align-items:center;justify-content:center;gap:3px;height:24px;margin:8px 0 4px}
+.wb{width:3px;border-radius:2px;background:rgba(255,255,255,0.55);animation:wv 1s ease-in-out infinite}
+.wb:nth-child(1){height:6px;animation-delay:0s}
+.wb:nth-child(2){height:12px;animation-delay:.08s}
+.wb:nth-child(3){height:18px;animation-delay:.16s}
+.wb:nth-child(4){height:22px;animation-delay:.24s}
+.wb:nth-child(5){height:16px;animation-delay:.32s}
+.wb:nth-child(6){height:20px;animation-delay:.40s}
+.wb:nth-child(7){height:14px;animation-delay:.48s}
+.wb:nth-child(8){height:10px;animation-delay:.56s}
+.wb:nth-child(9){height:6px;animation-delay:.64s}
+@keyframes wv{0%,100%{transform:scaleY(1);opacity:0.55}50%{transform:scaleY(1.9);opacity:1}}
+.wb.still{animation:none;height:3px;opacity:0.2}
+
+/* IVR SCREEN */
+.ivr-screen{flex:1;display:flex;flex-direction:column;background:var(--gy1);overflow:hidden}
+.ivr-display{flex:1;overflow-y:auto;padding:14px}
+.ivr-display::-webkit-scrollbar{width:3px}
+.ivr-display::-webkit-scrollbar-thumb{background:var(--gy3);border-radius:2px}
+
+.ivr-card{background:#fff;border:0.5px solid var(--gy3);border-radius:14px;padding:14px 16px;margin-bottom:10px;animation:pop .22s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ivr-card.bot{border-left:3px solid var(--bl2)}
+.ivr-card.user{background:var(--bl3);border-color:#b2ccf5;border-left:3px solid var(--bl2)}
+.ivr-card.system{background:var(--gy2);border:0.5px solid var(--gy3);text-align:center;border-left:none}
+.ivr-card.success{background:#f0fdf9;border-color:#86efca;border-left:3px solid var(--tl)}
+.ivr-card.warn{background:#fefce8;border-color:#fde68a;border-left:3px solid #ca8a04}
+
+.ivr-label{font-size:9.5px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--gy4);margin-bottom:5px}
+.ivr-text{font-size:12.5px;line-height:1.6;color:var(--gy9)}
+.ivr-text strong{font-weight:600;color:var(--bl)}
+.ivr-text.zh{font-size:13px}
+
+/* KEYPAD */
+.keypad-area{flex-shrink:0;background:#fff;border-top:0.5px solid var(--gy3);padding:12px}
+.keypad-hint{font-size:10px;color:var(--gy4);text-align:center;margin-bottom:10px;letter-spacing:0.2px}
+.keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:200px;margin:0 auto}
+.key-btn{aspect-ratio:1;background:var(--gy2);border:none;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.12s;font-family:var(--fn)}
+.key-btn:hover{background:var(--gy3)}
+.key-btn:active{transform:scale(0.93);background:var(--bl2)}
+.key-btn:active .key-num{color:#fff}
+.key-btn.highlight{background:var(--gy2)}
+.key-num{font-size:18px;font-weight:300;color:var(--gy9);line-height:1}
+.key-sub{display:none}
+.key-action{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:50%;transition:all 0.12s}
+.key-action:hover{background:var(--gy2)}
+.key-action:active{transform:scale(0.93)}
+
+/* QUICK REPLY ROW */
+.qr-area{flex-shrink:0;padding:8px 12px;background:var(--gy1);border-top:0.5px solid var(--gy3);display:flex;flex-wrap:wrap;gap:6px}
+.qr-btn{background:#fff;border:0.5px solid var(--bl2);color:var(--bl2);padding:5px 12px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer;font-family:var(--fn);transition:all 0.12s;white-space:nowrap}
+.qr-btn:hover{background:var(--bl3)}
+.qr-btn:active{transform:scale(0.97)}
+
+/* TEXT INPUT BAR */
+.inp-bar{display:flex;gap:8px;align-items:center;padding:10px 12px;background:#fff;border-top:0.5px solid var(--gy3);flex-shrink:0}
+.mic-btn{width:32px;height:32px;border-radius:50%;background:var(--bl3);border:0.5px solid var(--gy3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.mic-btn svg{width:14px;height:14px;fill:var(--bl)}
+.txt-inp{flex:1;border:0.5px solid var(--gy3);background:var(--gy1);border-radius:20px;padding:7px 12px;font-size:12px;font-family:var(--fn);color:var(--gy9);outline:none}
+.txt-inp:focus{border-color:var(--bl2);background:#fff}
+.snd-btn{width:32px;height:32px;border-radius:50%;background:var(--bl);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.12s}
+.snd-btn:hover{background:var(--bl2)}
+.snd-btn svg{width:13px;height:13px;fill:#fff;margin-left:1px}
+
+/* SINGPASS OVERLAY */
+.sp-wrap{position:absolute;inset:0;border-radius:34px;background:rgba(8,16,32,0.88);display:flex;align-items:center;justify-content:center;z-index:20;padding:18px}
+.sp-box{background:#fff;border-radius:20px;padding:22px 18px;width:100%;border:0.5px solid var(--gy3)}
+.sp-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.sp-mark{width:30px;height:30px;border-radius:7px;background:#b91c1c;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.sp-ttl{font-size:14px;font-weight:600;color:#b91c1c}
+.sp-desc{font-size:11px;color:var(--gy4);margin-bottom:14px;line-height:1.55}
+.sp-qr-box{background:var(--gy1);border:0.5px solid var(--gy3);border-radius:10px;height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.sp-div{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sp-line{flex:1;height:0.5px;background:var(--gy3)}
+.sp-or{font-size:10px;color:var(--gy4)}
+.sp-inp{width:100%;border:0.5px solid var(--gy3);border-radius:8px;padding:9px 12px;font-size:12px;font-family:var(--fn);text-transform:uppercase;letter-spacing:1px;outline:none;margin-bottom:10px;color:var(--gy9);background:var(--gy1)}
+.sp-inp:focus{border-color:var(--bl2);background:#fff}
+.sp-go{width:100%;padding:10px;border-radius:9px;background:#b91c1c;border:none;color:#fff;font-size:13px;font-weight:600;font-family:var(--fn);cursor:pointer}
+.sp-go:hover{background:#991b1b}
+
+/* BALANCE CARD */
+.bal-card{background:var(--bl);border-radius:12px;padding:14px 16px;color:#fff;margin:6px 0}
+.bal-lbl{font-size:9px;opacity:0.6;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:3px}
+.bal-amt{font-size:24px;font-weight:300;font-family:var(--fm);letter-spacing:-0.5px}
+.bal-sub{font-size:9.5px;opacity:0.5;margin-top:2px}
+.bal-id{font-size:10px;opacity:0.65;margin-top:10px;font-weight:500}
+.bal-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:0.5px solid rgba(255,255,255,0.15)}
+.bal-row-lbl{font-size:9px;opacity:0.55;text-transform:uppercase;letter-spacing:0.6px}
+.bal-row-val{font-size:11px;font-weight:500;opacity:0.9}
+
+/* APPOINTMENT CARD */
+.dt-card{background:#fff;border:0.5px solid var(--gy3);border-radius:12px;padding:12px;margin:4px 0}
+.dt-hdr{font-size:10.5px;font-weight:600;color:var(--gy5);margin-bottom:8px}
+.mini-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px}
+.ch{font-size:8.5px;color:var(--gy4);text-align:center;padding:2px 0;font-weight:500}
+.cd{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:9.5px;border-radius:4px;cursor:pointer;color:var(--gy5);transition:all 0.1s}
+.cd:hover{background:var(--bl3);color:var(--bl)}
+.cd.sel{background:var(--bl);color:#fff;font-weight:600}
+.cd.emp{cursor:default}
+.cd.na{opacity:0.3;cursor:default}
+.ts-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.ts{padding:4px 8px;border:0.5px solid var(--gy3);border-radius:6px;font-size:10px;cursor:pointer;color:var(--gy5);transition:all 0.1s;background:#fff}
+.ts:hover,.ts.sel{background:var(--bl);color:#fff;border-color:var(--bl)}
+.conf-btn{display:none;margin-top:10px;width:100%;padding:8px;background:var(--tl);color:#fff;border:none;border-radius:8px;font-family:var(--fn);font-size:12px;font-weight:500;cursor:pointer}
+.conf-btn:hover{background:#0a6056}
+.conf-btn.show{display:block}
+
+/* VOICEMAIL CARD */
+.vm-card{background:#fff;border:0.5px solid var(--gy3);border-radius:12px;padding:12px 14px;margin:6px 0}
+.vm-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.vm-icon{width:32px;height:32px;border-radius:8px;background:var(--bl3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.vm-info{flex:1}
+.vm-title{font-size:12px;font-weight:600;color:var(--gy9)}
+.vm-meta{font-size:10px;color:var(--gy4);margin-top:1px}
+.vm-wave{display:flex;align-items:center;gap:2px;height:24px;margin-bottom:8px}
+.vm-wb{width:3px;border-radius:2px;background:var(--bl2);opacity:0.5}
+.vm-wb:nth-child(odd){height:8px}
+.vm-wb:nth-child(even){height:16px}
+.vm-wb:nth-child(3){height:20px}
+.vm-wb:nth-child(5){height:14px}
+.vm-wb:nth-child(7){height:18px}
+.vm-wb:nth-child(9){height:10px}
+.vm-transcript{font-size:11px;color:var(--gy5);line-height:1.55;background:var(--gy1);border-radius:8px;padding:8px 10px;margin-bottom:8px;border-left:2px solid var(--bl2)}
+.vm-badge{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;padding:3px 8px;border-radius:8px;font-weight:500}
+.vm-badge.intent{background:#e0f2fe;color:#0369a1;border:0.5px solid #7dd3fc}
+.vm-badge.priority{background:#fef3c7;color:#92400e;border:0.5px solid #fcd34d}
+.vm-badge.created{background:#dcfce7;color:#166534;border:0.5px solid #86efac}
+
+/* EF OUTBOUND CARD */
+.ef-card{background:#fff;border:0.5px solid var(--gy3);border-radius:12px;padding:12px 14px;margin:6px 0}
+.ef-header{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--gy4);margin-bottom:8px}
+.ef-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--gy2)}
+.ef-row:last-child{border-bottom:none}
+.ef-key{font-size:11px;color:var(--gy5)}
+.ef-val{font-size:11px;font-weight:500;color:var(--gy9)}
+.ef-val.green{color:var(--gn)}
+.ef-val.blue{color:var(--bl2)}
+
+/* PANEL */
+.panel{flex:1;min-width:0}
+.ptitle{font-size:9.5px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--gy4);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ptitle::after{content:'';flex:1;height:0.5px;background:var(--gy3)}
+.psec{margin-bottom:18px}
+.psec-lbl{font-size:9.5px;color:var(--gy4);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;font-weight:500}
+.tb{width:100%;text-align:left;background:#fff;border:0.5px solid var(--gy3);border-radius:10px;padding:10px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--fn);margin-bottom:6px;transition:all 0.14s}
+.tb:hover{border-color:var(--bl2);background:var(--bl3)}
+.tb:active{transform:scale(0.99)}
+.tb.active{border-color:var(--bl2);background:var(--bl3);box-shadow:0 0 0 2px rgba(37,88,168,0.18)}
+.tb.active .tb-lbl{color:var(--bl)}
+.tb-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.tb-body{display:flex;flex-direction:column;gap:1px;flex:1}
+.tb-lbl{font-size:12px;font-weight:500;color:var(--gy9)}
+.tb-desc{font-size:10.5px;color:var(--gy4)}
+.tb-badge{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:500;flex-shrink:0;letter-spacing:0.2px;white-space:nowrap}
+.b-auth{background:#eff8ff;color:#175cd3;border:0.5px solid #b2ddff}
+.b-complex{background:#fef3f2;color:#b42318;border:0.5px solid #fecdca}
+.b-ai{background:#f0fdf9;color:#0d7a5f;border:0.5px solid #99f6e0}
+.b-appt{background:#fdf4ff;color:#6941c6;border:0.5px solid #e9d7fe}
+.b-ef{background:#fff7ed;color:#9a3412;border:0.5px solid #fed7aa}
+.b-vm{background:#f5f3ff;color:#5b21b6;border:0.5px solid #ddd6fe}
+
+.flow-box{background:#fff;border:0.5px solid var(--gy3);border-radius:10px;padding:13px;margin-bottom:14px}
+.flow-title{font-size:11px;font-weight:600;color:var(--gy5);margin-bottom:9px}
+.fstep{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:10.5px;color:var(--gy5)}
+.fdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.fstep.done .fdot{background:var(--tl)}
+.fstep.active .fdot{background:var(--bl2);box-shadow:0 0 0 3px var(--bl3)}
+.fstep.pending .fdot{background:var(--gy3)}
+.rst-btn{width:100%;padding:9px;border-radius:8px;background:var(--gy2);border:0.5px solid var(--gy3);color:var(--gy5);font-size:12px;font-weight:500;font-family:var(--fn);cursor:pointer;transition:all 0.12s}
+.rst-btn:hover{background:var(--gy3)}
+
+.info-card{background:var(--bl3);border:0.5px solid #b2ccf5;border-radius:10px;padding:11px 13px;margin-bottom:12px}
+.info-t{font-size:11px;font-weight:600;color:var(--bl);margin-bottom:3px}
+.info-b{font-size:10.5px;color:#2d5fa3;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="proto-banner" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+  <div><strong>⚠ User Testing</strong> &nbsp;<span>Interactive demo for Skills and Workforce Development Agency. Does not represent a live system or real citizen data.</span></div>
+  <span style="font-family:var(--fm);font-size:11px;opacity:0.65" id="session-id"></span>
+</div>
+
+<h2 class="sr-only">SWDA Citizen Engagement Orchestrator — interactive phone prototype with IVR triage, Singpass authentication, and four AI-assisted service journeys.</h2>
+
+<div class="root" id="root">
+
+  <div class="focus-stage">
+    <div class="phone" id="phone-frame">
+      <button class="phone-close-btn" onclick="closeAndReset()" title="Close &amp; reset">&#x2715;</button>
+      <div class="notch"></div>
+      <div class="screen" id="screen">
+
+        <!-- EMAIL NOTIFICATION -->
+        <div class="email-notif" id="email-notif">
+          <div class="email-notif-inner">
+            <div class="email-notif-ico">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </div>
+            <div class="email-notif-body">
+              <div class="email-notif-app">Mail</div>
+              <div class="email-notif-title" id="notif-title">New message from SWDA</div>
+              <div class="email-notif-msg" id="notif-msg">You have a new message</div>
+            </div>
+            <div class="email-notif-time" id="notif-time">now</div>
+          </div>
+        </div>
+
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+          <div class="status-row">
+            <div class="status-signal">
+              <div class="sig-bar"></div><div class="sig-bar"></div>
+              <div class="sig-bar"></div><div class="sig-bar"></div>
+            </div>
+            <span class="status-time" id="clk">9:41</span>
+            <div class="status-batt"><div class="batt-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- CALL BANNER -->
+        <div class="call-banner">
+          <div class="agency-row">
+            <div class="agency-seal">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            </div>
+            <div>
+              <div class="agency-name">Skills and Workforce Development Agency</div>
+              <div class="agency-sub">Official Hotline · 6785 5785</div>
+            </div>
+          </div>
+          <div class="call-status-row">
+            <div style="display:flex;align-items:center">
+              <div class="call-live-dot"></div>
+              <span class="call-live-text">Call connected</span>
+            </div>
+            <span class="call-dur" id="dur">00:00</span>
+          </div>
+          <div class="wave-wrap" id="wave">
+            <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+            <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+            <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          </div>
+        </div>
+
+        <!-- IVR SCREEN BODY -->
+        <div class="ivr-screen">
+          <div class="ivr-display" id="ivr-display"></div>
+          <div class="qr-area" id="qr-area"></div>
+          <div id="keypad-wrap"></div>
+          <div class="inp-bar" id="inp-bar" style="display:none">
+            <div class="mic-btn">
+              <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.49 6-3.31 6-6.72h-1.7z"/></svg>
+            </div>
+            <input class="txt-inp" id="txt-inp" placeholder="Type your response…"/>
+            <button class="snd-btn" id="snd-btn">
+              <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- SINGPASS OVERLAY -->
+        <div class="sp-wrap" id="sp-overlay" style="display:none">
+          <div class="sp-box">
+            <div class="sp-hdr">
+              <div class="sp-mark">SP</div>
+              <div class="sp-ttl">Singpass</div>
+            </div>
+            <div class="sp-desc">Scan with your Singpass app to verify your identity, or enter your NRIC / FIN below.</div>
+            <div class="sp-qr-box">
+              <svg width="96" height="96" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect x="5" y="5" width="33" height="33" fill="none" stroke="#1a3d6e" stroke-width="3"/>
+                <rect x="10" y="10" width="23" height="23" fill="none" stroke="#1a3d6e" stroke-width="1.5"/>
+                <rect x="13" y="13" width="17" height="17" fill="#1a3d6e"/>
+                <rect x="62" y="5" width="33" height="33" fill="none" stroke="#1a3d6e" stroke-width="3"/>
+                <rect x="67" y="10" width="23" height="23" fill="none" stroke="#1a3d6e" stroke-width="1.5"/>
+                <rect x="70" y="13" width="17" height="17" fill="#1a3d6e"/>
+                <rect x="5" y="62" width="33" height="33" fill="none" stroke="#1a3d6e" stroke-width="3"/>
+                <rect x="10" y="67" width="23" height="23" fill="none" stroke="#1a3d6e" stroke-width="1.5"/>
+                <rect x="13" y="70" width="17" height="17" fill="#1a3d6e"/>
+                <rect x="62" y="47" width="5" height="5" fill="#1a3d6e"/><rect x="72" y="47" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="67" y="52" width="5" height="5" fill="#1a3d6e"/><rect x="82" y="52" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="62" y="62" width="5" height="5" fill="#1a3d6e"/><rect x="77" y="57" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="62" y="72" width="5" height="5" fill="#1a3d6e"/><rect x="72" y="72" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="82" y="67" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="47" y="5" width="5" height="5" fill="#1a3d6e"/><rect x="47" y="15" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="52" y="10" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="47" y="47" width="5" height="5" fill="#1a3d6e"/><rect x="52" y="52" width="5" height="5" fill="#1a3d6e"/>
+                <rect x="47" y="57" width="5" height="5" fill="#1a3d6e"/>
+              </svg>
+            </div>
+            <div class="sp-div"><div class="sp-line"></div><div class="sp-or">OR</div><div class="sp-line"></div></div>
+            <input class="sp-inp" id="sp-nric" placeholder="S1234567A · NRIC / FIN" maxlength="9"/>
+            <button class="sp-go" id="sp-confirm">Verify &amp; Continue</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CORPPASS OVERLAY -->
+    <div class="sp-wrap" id="cp-overlay" style="display:none">
+      <div class="sp-box">
+        <div class="sp-hdr">
+          <div class="sp-mark" style="background:#1a3d6e">CP</div>
+          <div class="sp-ttl" style="color:#1a3d6e">Corppass</div>
+        </div>
+        <div class="sp-desc">Enter your company UEN to retrieve your SDL assessment details.</div>
+        <div class="sp-div"><div class="sp-line"></div></div>
+        <input class="sp-inp" id="cp-uen" placeholder="200001234A · UEN" maxlength="10" style="text-transform:uppercase"/>
+        <button class="sp-go" id="cp-confirm" style="background:#1a3d6e">Verify UEN &amp; Continue</button>
+      </div>
+    </div>
+
+    <!-- JOURNEY TRACKER -->
+    <div class="tracker" id="tracker">
+      <div class="tracker-inner">
+        <div class="tracker-title">Journey tracker</div>
+        <div class="tracker-scenario" id="tr-scenario">—</div>
+        <div class="tr-steps" id="tr-steps"></div>
+      </div>
+    </div>
+
+    <!-- OBSERVER NOTES -->
+    <div id="obs-panel" style="width:0;min-width:0;opacity:0;overflow:hidden;pointer-events:none;transition:width 0.4s cubic-bezier(0.4,0,0.2,1) 0.1s,opacity 0.35s ease 0.2s,min-width 0.4s;flex-shrink:0;align-self:flex-start">
+      <div style="width:210px;background:#fff;border:0.5px solid var(--gy3);border-radius:16px;padding:16px 14px;box-shadow:0 4px 24px rgba(26,61,110,0.10);max-height:calc(100vh - 48px);overflow-y:auto;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gy4)">Observer Notes</div>
+        <div style="font-size:13px;font-weight:600;color:var(--gy9);min-height:18px" id="obs-scenario-name">—</div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--gy5);margin-bottom:5px">Task checklist</div>
+          <div id="obs-tasks" style="display:flex;flex-direction:column;gap:3px"></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--gy5);margin-bottom:4px">Observations</div>
+          <textarea id="obs-notes" placeholder="Hesitation, confusion, unexpected behaviour…" style="width:100%;border:0.5px solid var(--gy3);border-radius:8px;padding:7px 9px;font-size:10.5px;font-family:var(--fn);color:var(--gy9);resize:none;outline:none;line-height:1.5;background:var(--gy1);height:68px"></textarea>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--gy5);margin-bottom:5px">Ease of use (1–5)</div>
+          <div id="obs-stars" style="display:flex;gap:3px">
+            <button onclick="setObsRating(1)" style="background:none;border:none;font-size:19px;cursor:pointer;opacity:0.2;color:var(--gy9);padding:1px;transition:opacity 0.1s">★</button>
+            <button onclick="setObsRating(2)" style="background:none;border:none;font-size:19px;cursor:pointer;opacity:0.2;color:var(--gy9);padding:1px;transition:opacity 0.1s">★</button>
+            <button onclick="setObsRating(3)" style="background:none;border:none;font-size:19px;cursor:pointer;opacity:0.2;color:var(--gy9);padding:1px;transition:opacity 0.1s">★</button>
+            <button onclick="setObsRating(4)" style="background:none;border:none;font-size:19px;cursor:pointer;opacity:0.2;color:var(--gy9);padding:1px;transition:opacity 0.1s">★</button>
+            <button onclick="setObsRating(5)" style="background:none;border:none;font-size:19px;cursor:pointer;opacity:0.2;color:var(--gy9);padding:1px;transition:opacity 0.1s">★</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:#92400e;margin-bottom:4px">Issues</div>
+          <textarea id="obs-issues" placeholder="Friction, errors, unclear language…" style="width:100%;border:0.5px solid var(--gy3);border-radius:8px;padding:7px 9px;font-size:10.5px;font-family:var(--fn);color:var(--gy9);resize:none;outline:none;line-height:1.5;background:var(--gy1);height:50px"></textarea>
+        </div>
+        <button onclick="saveObsNote()" style="width:100%;padding:8px;border-radius:8px;background:var(--bl);border:none;color:#fff;font-size:11px;font-weight:600;font-family:var(--fn);cursor:pointer">Save Note</button>
+        <div id="obs-saved" style="font-size:10px;color:var(--tl);font-weight:500;text-align:center;display:none">✓ Note saved</div>
+        <div style="border-top:0.5px solid var(--gy3);padding-top:8px">
+          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--gy4);margin-bottom:6px">Saved notes</div>
+          <div id="obs-log" style="display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div class="panel">
+    <div class="ptitle">Testing Panel</div>
+
+    <div class="info-card">
+      <div class="info-t">How to use</div>
+      <div class="info-b">Select a scenario to jump straight into that journey. The phone focuses for distraction-free interaction. Use Reset to return to the full IVR start.</div>
+    </div>
+
+    <div class="psec">
+      <div class="psec-lbl">Individual — SWDA</div>
+      <button class="tb" data-sc="balance" onclick="jumpTo('balance')">
+        <div class="tb-ico" style="background:#eff8ff">💳</div>
+        <div class="tb-body"><div class="tb-lbl">Check SkillsFuture Credit Balance</div><div class="tb-desc">Singpass authentication required</div></div>
+        <div class="tb-badge b-auth">Auth</div>
+      </button>
+      <button class="tb" data-sc="appeal" onclick="jumpTo('appeal')">
+        <div class="tb-ico" style="background:#fef3f2">📋</div>
+        <div class="tb-body"><div class="tb-lbl">Appeal Unlisted Course for SFC</div><div class="tb-desc">Complex case — manual review required</div></div>
+        <div class="tb-badge b-complex">Complex</div>
+      </button>
+      <button class="tb" data-sc="career" onclick="jumpTo('career')">
+        <div class="tb-ico" style="background:#f0fdf9">🤖</div>
+        <div class="tb-body"><div class="tb-lbl">Career Advisory — Upskilling Pathway</div><div class="tb-desc">Career guidance + personalised email</div></div>
+        <div class="tb-badge b-ai">Career</div>
+      </button>
+    </div>
+
+    <div class="psec">
+      <div class="psec-lbl">Employers</div>
+      <button class="tb" data-sc="sdl" onclick="jumpTo('sdl')">
+        <div class="tb-ico" style="background:#fefce8">🧮</div>
+        <div class="tb-body"><div class="tb-lbl">SDL Computation / Appeal</div><div class="tb-desc">UEN verified · compute or escalate</div></div>
+        <div class="tb-badge" style="background:#fefce8;color:#713f12;border:0.5px solid #fde68a;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:500">SDL</div>
+      </button>
+      <button class="tb" data-sc="sfec" onclick="jumpTo('sfec')">
+        <div class="tb-ico" style="background:#fdf4ff">🏢</div>
+        <div class="tb-body"><div class="tb-lbl">SFEC Enquiry</div><div class="tb-desc">Enterprise credit · case creation</div></div>
+        <div class="tb-badge b-appt">Employer</div>
+      </button>
+    </div>
+    <div class="psec">
+      <div class="psec-lbl">Training Providers</div>
+      <button class="tb" data-sc="tp" onclick="jumpTo('tp')">
+        <div class="tb-ico" style="background:#f0fdfa">🏫</div>
+        <div class="tb-body"><div class="tb-lbl">e-Attendance Appeal</div><div class="tb-desc">Direct TPGateway routing · no transfer</div></div>
+        <div class="tb-badge b-ai" style="background:#f0fdfa;color:#134e4a;border:0.5px solid #99f6e0">TP</div>
+      </button>
+    </div>
+    <button class="rst-btn" onclick="closeAndReset()">↺ &nbsp; Reset to IVR start</button>
+  </div>
+
+</div>
+
+<script>
+let S = {
+  node: 'dialing',
+  lang: null,
+  accType: null,
+  scenario: null,
+  courseName: '',
+  selDate: null,
+  selTime: null,
+  timerSec: 0
+};
+let timerInt = null;
+let clockInt = null;
+
+const FLOWS = {
+  balance: { title: 'Check SFC Balance', steps: ['Call connected','Language selected','Profile confirmed','Singpass verified','Balance retrieved'] },
+  appeal:  { title: 'Appeal Unlisted Course', steps: ['Call connected','Language selected','Profile confirmed','Course details captured','Escalation arranged'] },
+  career:  { title: 'Career Advisory', steps: ['Call connected','Language selected','Profile confirmed','Pathway identified','Resources sent'] },
+  ef:      { title: 'EF Outbound — Reschedule', steps: ['AI initiates call','Citizen connected','Appointment confirmed','New slot selected','CRM updated'] },
+  voicemail:{ title: 'Abandoned Call Recovery', steps: ['Call surge detected','Voicemail offered','Message recorded','Transcription complete','Case created'] },
+  sdl:     { title: 'SDL Computation / Appeal', steps: ['Call connected','Employer confirmed','Intent classified','UEN verified','Resolved or escalated'] },
+  sfec:    { title: 'SFEC Enquiry', steps: ['Call connected','Employer confirmed','Enquiry captured','Case created','Follow-up scheduled'] },
+  tp:      { title: 'e-Attendance Appeal', steps: ['Call connected','TP confirmed','Course details captured','Case created','Routed to TPGateway'] },
+  sdl:      { title: 'SDL Computation / Appeal', steps: ['Call connected','Employer confirmed','Intent classified','UEN verified','Resolved or escalated'] },
+  sfec:     { title: 'SFEC Enquiry', steps: ['Call connected','Employer confirmed','Enquiry captured','Case created','Follow-up scheduled'] },
+  tp:       { title: 'e-Attendance Appeal', steps: ['Call connected','TP confirmed','Course details captured','Case created','Routed to TPGateway'] },
+  main:     { title: 'Journey progress', steps: ['Call connected','Language selected','Profile selected','Service in progress','Completed'] }
+};
+
+function wave(on){
+  document.querySelectorAll('.wb').forEach(b=>{ on?b.classList.remove('still'):b.classList.add('still'); });
+}
+
+function startTimer(){
+  if(timerInt) clearInterval(timerInt);
+  S.timerSec=0;
+  timerInt=setInterval(()=>{
+    S.timerSec++;
+    const m=String(Math.floor(S.timerSec/60)).padStart(2,'0');
+    const s=String(S.timerSec%60).padStart(2,'0');
+    const el=document.getElementById('dur');
+    if(el) el.textContent=m+':'+s;
+  },1000);
+}
+
+function startClock(){
+  if(clockInt) clearInterval(clockInt);
+  const el=document.getElementById('clk');
+  const tick=()=>{
+    const d=new Date();
+    const h=String(d.getHours()).padStart(2,'0');
+    const m=String(d.getMinutes()).padStart(2,'0');
+    if(el) el.textContent=h+':'+m;
+  };
+  tick();
+  clockInt=setInterval(tick,10000);
+}
+
+function scrollDown(){
+  const el=document.getElementById('ivr-display');
+  if(el) setTimeout(()=>el.scrollTop=el.scrollHeight,40);
+}
+
+function addCard(type, content, delay=0){
+  return new Promise(res=>{
+    setTimeout(()=>{
+      const d=document.getElementById('ivr-display');
+      if(!d){res();return;}
+      const c=document.createElement('div');
+      c.className='ivr-card '+type;
+      if(type==='bot'){
+        c.innerHTML=`<div class="ivr-label">SWDA Assistant</div><div class="ivr-text">${content}</div>`;
+        wave(true);setTimeout(()=>wave(false),1600);
+      } else if(type==='user'){
+        c.innerHTML=`<div class="ivr-label">You pressed / said</div><div class="ivr-text">${content}</div>`;
+      } else if(type==='system'){
+        c.innerHTML=`<div class="ivr-text" style="font-size:10px;color:var(--gy4)">${content}</div>`;
+      } else if(type==='success'){
+        c.innerHTML=`<div class="ivr-label" style="color:var(--tl)">Confirmed</div><div class="ivr-text">${content}</div>`;
+      } else if(type==='warn'){
+        c.innerHTML=`<div class="ivr-label" style="color:#ca8a04">Notice</div><div class="ivr-text">${content}</div>`;
+      } else {
+        c.innerHTML=content;
+      }
+      d.appendChild(c);
+      scrollDown();
+      res();
+    },delay);
+  });
+}
+
+function addCustomCard(html, delay=0){
+  return new Promise(res=>{
+    setTimeout(()=>{
+      const d=document.getElementById('ivr-display');
+      if(!d){res();return;}
+      const c=document.createElement('div');
+      c.className='ivr-card';c.style.padding='0';c.style.border='none';c.style.background='none';
+      c.innerHTML=html;
+      d.appendChild(c);
+      scrollDown();
+      res();
+    },delay);
+  });
+}
+
+function setReplies(opts){
+  const qr=document.getElementById('qr-area');
+  qr.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='qr-btn';b.textContent=o.label;
+    b.onclick=()=>handleReply(o.value||o.label,o.label);
+    qr.appendChild(b);
+  });
+}
+
+function clearReplies(){ document.getElementById('qr-area').innerHTML=''; }
+
+function showKeypad(highlight=[]){
+  const wrap=document.getElementById('keypad-wrap');
+  const KEYS=[
+    {n:'1',s:''},{n:'2',s:'ABC'},{n:'3',s:'DEF'},
+    {n:'4',s:'GHI'},{n:'5',s:'JKL'},{n:'6',s:'MNO'},
+    {n:'7',s:'PQRS'},{n:'8',s:'TUV'},{n:'9',s:'WXYZ'},
+    {n:'*',s:''},{n:'0',s:'+'},{n:'#',s:''}
+  ];
+  let grid='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:200px;margin:0 auto">';
+  KEYS.forEach(k=>{
+    const hl=highlight.includes(k.n);
+    grid+=`<button class="key-btn${hl?' highlight':''}" onclick="pressKey('${k.n}')">
+      <span class="key-num">${k.n}</span>
+      ${k.s?`<span class="key-sub">${k.s}</span>`:''}
+    </button>`;
+  });
+  grid+='</div>';
+  wrap.innerHTML=`<div class="keypad-area"><div class="keypad-hint" id="kpad-hint">Press a key</div>${grid}</div>`;
+}
+
+function hideKeypad(){ document.getElementById('keypad-wrap').innerHTML=''; }
+function showInput(ph){ document.getElementById('inp-bar').style.display='flex'; if(ph) document.getElementById('txt-inp').placeholder=ph; document.getElementById('txt-inp').focus(); }
+function hideInput(){ document.getElementById('inp-bar').style.display='none'; }
+
+async function pressKey(k){
+  if(S.node==='lang_select'){
+    if(k==='1'){
+      S.lang='English';
+      await addCard('user','<strong>1</strong> — English');
+      await addCard('system','✓ Language set to English',300);
+      await addCard('bot','Thank you. Are you calling as an <strong>Individual</strong>, on behalf of an <strong>Employer</strong>, or as a <strong>Training Provider</strong>?<br>Press <strong>1</strong> for Individual &nbsp;·&nbsp; <strong>2</strong> for Employer &nbsp;·&nbsp; <strong>3</strong> for Training Provider.',500);
+      showKeypad(['1','2','3']);
+      document.getElementById('kpad-hint').textContent='Press 1, 2 or 3';
+      S.node='acc_select';
+    } else if(k==='2'){
+      S.lang='Chinese';
+      await addCard('user','<strong>2</strong> — 华语');
+      await addCard('system','✓ 语言已设置为华语',300);
+      await addCard('bot','<span class="zh">感谢您。请按 <strong>1</strong> 选择个人，按 <strong>2</strong> 选择雇主，按 <strong>3</strong> 选择培训机构。</span>',500);
+      showKeypad(['1','2','3']);
+      document.getElementById('kpad-hint').textContent='按 1、2 或 3';
+      S.node='acc_select';
+    }
+    return;
+  }
+  if(S.node==='acc_select'){
+    const map={'1':'Individual','2':'Employer','3':'Training Provider'};
+    const zh_map={'1':'个人','2':'雇主','3':'培训机构'};
+    if(map[k]){
+      S.accType=map[k];
+      const label=S.lang==='Chinese'?zh_map[k]:map[k];
+      await addCard('user',`<strong>${k}</strong> — ${label}`);
+      await addCard('system',`✓ Profile: ${S.accType}`,300);
+      hideKeypad();
+      await showMainMenu();
+    }
+    return;
+  }
+}
+
+async function showMainMenu(){
+  S.node='main_menu';
+  updateFlow('main',2);
+  await addCard('bot',`Thank you. You are connected as an <strong>${S.accType}</strong>. How may I assist you today?`,500);
+  if(S.accType==='Individual'){
+    setReplies([
+      {label:'Check SFC Balance',value:'balance'},
+      {label:'Appeal a Course',value:'appeal'},
+      {label:'Career Advisory',value:'career'},
+      {label:'Manage Career Appointment',value:'ef'}
+    ]);
+  } else if(S.accType==='Employer'){
+    setReplies([
+      {label:'SDL Enquiry',value:'sdl'},
+      {label:'SkillsFuture Enterprise Credit',value:'sfec'},
+      {label:'Other Enquiry',value:'other'}
+    ]);
+  } else {
+    setReplies([
+      {label:'e-Attendance Appeal',value:'tp_attendance'},
+      {label:'Programme Enquiry',value:'other'},
+      {label:'Other Enquiry',value:'other'}
+    ]);
+  }
+}
+
+async function handleReply(value, label){
+  clearReplies(); hideKeypad(); hideInput();
+  await addCard('user', label);
+
+  if(value==='new_query'){
+    updateFlow('main',-1);
+    await addCard('system','— Starting new enquiry —',300);
+    updateFlow('main',1);
+    await addCard('bot','Are you calling as an <strong>Individual</strong>, on behalf of an <strong>Employer</strong>, or as a <strong>Training Provider</strong>?<br>Press <strong>1</strong> for Individual &nbsp;·&nbsp; <strong>2</strong> for Employer &nbsp;·&nbsp; <strong>3</strong> for Training Provider.',500);
+    showKeypad(['1','2','3']);
+    document.getElementById('kpad-hint').textContent='Press 1, 2 or 3';
+    S.node='acc_select';
+    return;
+  }
+
+  if(S.node==='main_menu'||S.node==='menu'){
+    const known=['balance','appeal','career','ef','voicemail','sdl','sfec','tp_attendance','other'];
+    if(known.includes(value)){
+      await showTriageHold();
+      await new Promise(r=>setTimeout(r,4500));
+      hideTriageHold();
+      if(value==='balance') await doBalance();
+      else if(value==='appeal') await doAppeal();
+      else if(value==='career') await doCareer();
+      else if(value==='ef') await doEF();
+      else if(value==='sdl') await doSDL();
+      else if(value==='sfec') await doSFEC();
+      else if(value==='tp_attendance') await doTP();
+      else await doOther();
+    } else {
+      await addCard('bot','I\'m sorry, I didn\'t quite catch that. Please select an option.',400);
+      setReplies([{label:'Check SFC Balance',value:'balance'},{label:'Appeal a Course',value:'appeal'},{label:'Career Advisory',value:'career'},{label:'Manage Career Appointment',value:'ef'}]);
+    }
+    return;
+  }
+
+  if(S.node==='appeal_course'){
+    S.courseName=label;
+    await addCard('bot',`Course name noted: <strong>"${label}"</strong>. This has been flagged as a <strong>Complex</strong> case and will be reviewed by an SWDA officer.`,400);
+    await addCard('bot','How would you like to proceed?',700);
+    setReplies([
+      {label:'Schedule a Callback',value:'callback'},
+      {label:'Connect to Live Chat',value:'livechat'},
+      {label:'Hold for Next Available Officer',value:'wait'}
+    ]);
+    S.node='appeal_channel';
+    return;
+  }
+  if(S.node==='appeal_channel'){
+    let r='';
+    if(value==='callback') r='A callback has been scheduled. An SWDA officer will contact you within <strong>2 working days</strong>. A case reference will be sent to your registered email.';
+    else if(value==='livechat') r='Connecting you to a live chat officer now. Estimated wait: <strong>3 minutes</strong>.';
+    else r='You are in the queue. Your position: <strong>#4</strong>. Estimated wait: <strong>12 minutes</strong>.';
+    await addCard('bot',r,400);
+    await endFlow();
+    return;
+  }
+  if(S.node==='career_portal'){
+    if(value==='Yes'){
+      await addCard('bot','Good. Please look out for the Career Matching section — it shows you courses aligned to your target role.',400);
+      await addCard('bot','Would you like to speak with a Career Development Officer for personalised guidance?',700);
+      S.node='career_agent';
+      setReplies([{label:'Yes, connect me',value:'agent_yes'},{label:'No, that\'s all',value:'agent_no'}]);
+    } else {
+      await addCard('bot','No problem. I\'ll send a personalised list of recommended courses to your registered email address. Please hold a moment.',400);
+      await addCard('bot','What email should we send this to?',600);
+      S.node='career_email';
+      showInput('Enter your email address…');
+    }
+    return;
+  }
+  if(S.node==='career_agent'||S.node==='career_agent2'){
+    if(value==='agent_yes') await addCard('bot','Connecting you to a Career Development Officer. Estimated wait: <strong>5 minutes</strong>.',400);
+    else await addCard('bot','Noted. Best of luck with your upskilling pathway. We\'ll send your course list shortly.',400);
+    await endFlow(); return;
+  }
+  if(S.node==='ef_action'){
+    if(value==='confirm'){
+      await addCard('success','Your appointment on <strong>Wednesday 14 May at 10:00 AM</strong> with Officer Priya has been confirmed. A reminder SMS will be sent the day before.',400);
+      setTimeout(()=>showEmailNotif(null,'Appointment Confirmation — SWDA','Career coaching session confirmed: 14 May, 10:00 AM'),800);
+      await endFlow();
+    } else if(value==='reschedule'){
+      await addCard('bot','I can check Officer Priya\'s availability for you. Please select a new date and time:',400);
+      renderDateCard();
+      S.node='ef_pick';
+    } else {
+      await addCard('success','Your appointment on <strong>14 May</strong> has been cancelled. A confirmation will be sent to your registered contact.',400);
+      await endFlow();
+    }
+    return;
+  }
+  if(S.node==='sdl_action'){
+    if(value==='compute'){
+      await addCard('bot','I can help with an SDL computation estimate. Please state your total monthly payroll amount after the tone.',400);
+      S.node='sdl_payroll';
+      showInput('Enter monthly payroll e.g. 50000');
+    } else {
+      await addCard('bot','SDL appeals require officer review. I\'ll create a case now. Your case reference will be emailed to you within <strong>1 working day</strong>.',400);
+      await endFlow();
+    }
+    return;
+  }
+  if(S.node==='sdl_payroll'){
+    await handleReply(value,value); return;
+  }
+
+  if(S.node==='sfec_q'){
+    if(value==='sfec_specific'){
+      await addCard('bot','Please briefly describe your SFEC question:',400);
+      S.node='sfec_detail'; showInput('Describe your SFEC question…');
+    } else {
+      await addCard('bot','Noted. I’ve registered your enquiry. An SFEC officer will follow up within <strong>2 working days</strong>.',400);
+      await addCustomCard(`<div class="ef-card">
+        <div class="ef-header">Case Created — SFEC Enquiry</div>
+        <div class="ef-row"><span class="ef-key">Case ID</span><span class="ef-val blue">CRM-2026-59104</span></div>
+        <div class="ef-row"><span class="ef-key">Segment</span><span class="ef-val">Employer</span></div>
+        <div class="ef-row"><span class="ef-key">Follow-up SLA</span><span class="ef-val">2 working days</span></div>
+        <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
+      </div>`,400);
+      updateFlow('sfec',4);
+      await endFlow();
+    }
+    return;
+  }
+
+  await addCard('bot','I’m sorry, I didn’t understand that. Let me bring you back to the main menu.',400);
+  S.node='menu';
+  setTimeout(showMainMenu,600);
+}
+
+async function doBalance(){
+  S.scenario='balance';
+  updateFlow('balance',2);
+  await addCard('bot','I can help you check your SkillsFuture Credit (SFC) balance.',400);
+  await addCard('bot','To retrieve your account details, I need to verify your identity via <strong>Singpass</strong>. Please approve the notification on your Singpass app, or scan the QR code.',700);
+  setTimeout(()=>{ document.getElementById('sp-overlay').style.display='flex'; },900);
+}
+
+async function doAppeal(){
+  S.scenario='appeal';
+  updateFlow('appeal',2);
+  await addCard('bot','I can help with that. Appeals for courses not currently on the approved list require manual review by an SWDA officer.',400);
+  await addCard('bot','Please provide the full name of the course you wish to submit an appeal for:',800);
+  S.node='appeal_course';
+  showInput('Enter course name…');
+}
+
+async function doCareer(){
+  S.scenario='career';
+  updateFlow('career',2);
+  await addCard('bot','I can connect you with our Career Advisory service. This covers career planning, upskilling pathways, and relevant SkillsFuture programmes.',400);
+  await addCard('bot','Have you visited <strong>MySkillsFuture</strong> (myskillsfuture.gov.sg) to explore career pathways and available courses?',800);
+  S.node='career_portal';
+  setReplies([{label:'Yes, I have',value:'Yes'},{label:'Not yet',value:'No'}]);
+}
+
+async function doEF(){
+  S.scenario='ef';
+  updateFlow('ef',1);
+  await addCard('system','— AI outbound call placed by EF team —',200);
+  await addCard('bot','Hello, may I speak with Devin? This is Workforce Singapore calling regarding your upcoming career coaching appointment.',600);
+  updateFlow('ef',2);
+  await addCard('bot','You have a career coaching session with <strong>Officer Priya</strong> scheduled for <strong>Wednesday, 14 May at 10:00 AM</strong>. Would you like to keep this appointment?',1000);
+  S.node='ef_action';
+  setReplies([
+    {label:'Yes, confirm it',value:'confirm'},
+    {label:'I need to reschedule',value:'reschedule'},
+    {label:'Please cancel it',value:'cancel'}
+  ]);
+}
+
+async function doSDL(){
+  S.scenario='sdl';
+  updateFlow('sdl',2);
+  await showTriageHold('Classifying employer intent…');
+  await new Promise(r=>setTimeout(r,1600));
+  hideTriageHold();
+  await addCard('system','Intent: <strong>SDL Enquiry</strong> · Segment: Employer · Branch: computation or appeal',0);
+  await addCard('bot','I can help with Skills Development Levy (SDL) enquiries. Are you looking to <strong>estimate your SDL liability</strong>, or do you need to <strong>submit a formal appeal</strong>?',500);
+  S.node='sdl_action';
+  setReplies([{label:'Compute my SDL',value:'compute'},{label:'Submit a formal appeal',value:'appeal_sdl'}]);
+}
+
+async function doSFEC(){
+  S.scenario='sfec';
+  await addCard('bot','SkillsFuture Enterprise Credit (SFEC) enquiries are handled by our employer services team.',400);
+  await addCard('bot','I\'ll create a case and an officer will follow up with you within <strong>2 working days</strong>. Is there anything specific you\'d like to flag?',700);
+  setReplies([{label:'Just follow up with me',value:'done'},{label:'I have a specific question',value:'other'}]);
+  S.node='sfec_done';
+}
+
+async function doTP(){
+  S.scenario='tp';
+  updateFlow('tp',2);
+  await showTriageHold('Classifying TP intent…');
+  await new Promise(r=>setTimeout(r,1400));
+  hideTriageHold();
+  await addCard('system','Intent: <strong>e-Attendance Appeal</strong> · Segment: Training Provider · Direct routing: TPGateway',0);
+  await addCard('bot','I can help with e-Attendance appeals. These are reviewed by the SWDA TPGateway team — no transfer required.',400);
+  await addCard('bot','Please provide the <strong>course run ID</strong> or <strong>course title</strong> for the attendance record:',700);
+  S.node='tp_course';
+  showInput('Enter course run ID or title…');
+}
+
+async function doOther(){
+  await addCard('bot','I\'ll connect you to the next available officer. Please hold.',400);
+  await new Promise(r=>setTimeout(r,800));
+  await addCard('bot','Estimated wait time: <strong>8 minutes</strong>. You may also submit your enquiry via the <strong>SWDA Service Portal</strong> at service-portal.skillsfuture.gov.sg.',600);
+  await endFlow();
+}
+
+async function doVoicemail(){
+  S.scenario='voicemail';
+  updateFlow('voicemail',0);
+  await addCard('system','— All lines busy. Queue threshold reached. —',200);
+  updateFlow('voicemail',1);
+  await addCard('bot','Thank you for calling Skills and Workforce Development Agency. We are currently experiencing high call volumes. Rather than ask you to call back, you may leave a <strong>voicemail</strong> and we will follow up with you.',500);
+  await addCard('bot','After the tone, please state your <strong>name</strong>, <strong>NRIC</strong>, and <strong>your enquiry</strong>. Your message will be transcribed and a case created automatically.',700);
+  await new Promise(r=>setTimeout(r,500));
+  await addCard('system','— Recording started —',200);
+  updateFlow('voicemail',2);
+  await addCustomCard(`<div class="vm-card">
+    <div class="vm-top">
+      <div class="vm-icon">🎙️</div>
+      <div class="vm-info">
+        <div class="vm-title">Voicemail recording</div>
+        <div class="vm-meta">+65 9XXX 4872 · Inbound · 02 May 2026</div>
+      </div>
+    </div>
+    <div class="vm-wave">
+      <div class="vm-wb"></div><div class="vm-wb"></div><div class="vm-wb"></div>
+      <div class="vm-wb"></div><div class="vm-wb"></div><div class="vm-wb"></div>
+      <div class="vm-wb"></div><div class="vm-wb"></div><div class="vm-wb"></div>
+      <div class="vm-wb"></div><div class="vm-wb"></div>
+    </div>
+    <div class="vm-transcript">"Hi, this is Aisyah. My NRIC ends in 234A. I've been waiting two weeks for my SFC appeal to be reviewed — the course is the Advanced Certificate in Learning and Performance at ACTA. I submitted via the portal but haven't heard back. Please could someone call me?"</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <span class="vm-badge intent">Intent: SFC Appeal Status</span>
+      <span class="vm-badge priority">Priority: Callback</span>
+    </div>
+  </div>`,600);
+  updateFlow('voicemail',3);
+  await addCard('system','— AI transcription complete —',800);
+  updateFlow('voicemail',4);
+  await addCard('success','Case created automatically. <strong>Case ID: CRM-2026-48291</strong>. Assigned to: SkillsFuture Credit team. Citizen will be contacted within <strong>1 working day</strong>.',600);
+  await addCustomCard(`<div class="ef-card">
+    <div class="ef-header">Auto-generated CRM Case</div>
+    <div class="ef-row"><span class="ef-key">Case ID</span><span class="ef-val blue">CRM-2026-48291</span></div>
+    <div class="ef-row"><span class="ef-key">Caller</span><span class="ef-val">Aisyah · NRIC ends 234A</span></div>
+    <div class="ef-row"><span class="ef-key">Intent</span><span class="ef-val">SFC Appeal Status</span></div>
+    <div class="ef-row"><span class="ef-key">Programme</span><span class="ef-val">Advanced Cert in Learning &amp; Performance</span></div>
+    <div class="ef-row"><span class="ef-key">Priority</span><span class="ef-val">Callback within 1 working day</span></div>
+    <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
+  </div>`,400);
+  await endFlow();
+}
+
+function renderDateCard(){
+  const avail=[15,16,19,20,21,22,26,27,28];
+  const days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  let hdrs=days.map(d=>`<div class="ch">${d}</div>`).join('');
+  let cells='';
+  for(let i=0;i<3;i++) cells+=`<div class="cd emp"></div>`;
+  for(let d=1;d<=31;d++){
+    const ok=avail.includes(d);
+    cells+=`<div class="cd${ok?'':' na'}" ${ok?`onclick="pickDate(${d})"`:''}>${d}</div>`;
+  }
+  const times=['9:00 AM','10:00 AM','11:00 AM','2:00 PM','3:00 PM','4:00 PM'];
+  const tslots=times.map(t=>`<div class="ts" onclick="pickTime('${t}')">${t}</div>`).join('');
+  const html=`<div class="dt-card">
+    <div class="dt-hdr">May 2026 — Select a date</div>
+    <div class="mini-cal" id="mcal">${hdrs}${cells}</div>
+    <div class="dt-hdr" style="margin-top:8px">Available time slots</div>
+    <div class="ts-wrap" id="tslots">${tslots}</div>
+    <button class="conf-btn" id="conf-btn" onclick="confirmAppt()">Confirm Appointment</button>
+  </div>`;
+  addCustomCard(html,200);
+}
+
+function pickDate(d){
+  S.selDate=d;
+  document.querySelectorAll('.cd').forEach(el=>{ el.classList.remove('sel'); if(el.textContent==String(d)) el.classList.add('sel'); });
+  checkConfirm();
+}
+function pickTime(t){
+  S.selTime=t;
+  document.querySelectorAll('.ts').forEach(el=>{ el.classList.remove('sel'); if(el.textContent===t) el.classList.add('sel'); });
+  checkConfirm();
+}
+function checkConfirm(){
+  const b=document.getElementById('conf-btn');
+  if(b&&S.selDate&&S.selTime) b.classList.add('show');
+}
+async function confirmAppt(){
+  clearReplies(); hideInput();
+  await addCard('user',`May ${S.selDate}, ${S.selTime}`);
+  updateFlow(S.scenario||'ef',3);
+  await addCard('success',`Appointment rescheduled to <strong>May ${S.selDate}, 2026 at ${S.selTime}</strong> with Officer Priya. A confirmation SMS will be sent to your registered mobile number.`,400);
+  setTimeout(()=>showEmailNotif(null,'Appointment Rescheduled — SWDA',`New session: May ${S.selDate}, 2026 at ${S.selTime}`),800);
+  updateFlow(S.scenario||'ef',4);
+  await addCard('system','— CRM appointment record updated —',600);
+  await addCustomCard(`<div class="ef-card">
+    <div class="ef-header">CRM update — EF appointment</div>
+    <div class="ef-row"><span class="ef-key">Citizen</span><span class="ef-val">Devin</span></div>
+    <div class="ef-row"><span class="ef-key">Officer</span><span class="ef-val">Priya</span></div>
+    <div class="ef-row"><span class="ef-key">Previous slot</span><span class="ef-val">Wed 14 May · 10:00 AM</span></div>
+    <div class="ef-row"><span class="ef-key">New slot</span><span class="ef-val green">May ${S.selDate} · ${S.selTime}</span></div>
+    <div class="ef-row"><span class="ef-key">SMS reminder</span><span class="ef-val green">Scheduled ✓</span></div>
+  </div>`,400);
+  await endFlow();
+}
+
+async function endFlow(){
+  updateFlow(S.scenario||'main',4);
+  await addCard('system','— Session ended —',600);
+  setReplies([{label:'Start new enquiry',value:'new_query'}]);
+  S.node='done'; wave(false);
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('sp-confirm').addEventListener('click', async function(){
+    const nric=document.getElementById('sp-nric').value.trim();
+    if(!nric){ document.getElementById('sp-nric').style.borderColor='#b91c1c'; return; }
+    document.getElementById('sp-overlay').style.display='none';
+    document.getElementById('sp-nric').value='';
+    updateFlow('balance',3);
+    await addCard('system','✓ Singpass authentication successful',0);
+    const holdCard=document.createElement('div');
+    holdCard.className='ivr-card triage';
+    holdCard.id='balance-hold-card';
+    holdCard.innerHTML=`
+      <div class="triage-music">🔍</div>
+      <div class="triage-title">Retrieving your SFC balance…</div>
+      <div class="triage-sub">Connecting to SkillsFuture backend — please hold</div>
+      <div class="triage-dots">
+        <div class="triage-dot"></div><div class="triage-dot"></div>
+        <div class="triage-dot"></div><div class="triage-dot"></div>
+      </div>`;
+    const display=document.getElementById('ivr-display');
+    if(display){ display.appendChild(holdCard); scrollDown(); }
+    await new Promise(r=>setTimeout(r,4000));
+    const hc=document.getElementById('balance-hold-card');
+    if(hc) hc.remove();
+    updateFlow('balance',4);
+    await addCard('bot',`Identity verified. Here is your current <strong>SkillsFuture Credit</strong> balance as of today:`,400);
+    await addCustomCard(`<div class="bal-card">
+      <div class="bal-lbl">SkillsFuture Credit</div>
+      <div class="bal-amt">$500.00</div>
+      <div class="bal-sub">Opening credit — valid until 31 Dec 2025</div>
+      <div class="bal-row">
+        <span class="bal-row-lbl">One-off Top-Up</span>
+        <span class="bal-row-val">$488.00</span>
+      </div>
+      <div class="bal-row">
+        <span class="bal-row-lbl">Mid-Career Enhanced (MCES)</span>
+        <span class="bal-row-val">$4,500.00</span>
+      </div>
+      <div class="bal-id">${nric} · Individual Account</div>
+    </div>`,700);
+    await addCard('bot','Your credit can be used for SWDA-approved courses on the <strong>MySkillsFuture portal</strong> (myskillsfuture.gov.sg). A summary has been sent to your registered email.',900);
+    await endFlow();
+  });
+
+  document.getElementById('snd-btn').addEventListener('click',submitText);
+  document.getElementById('txt-inp').addEventListener('keydown',e=>{ if(e.key==='Enter') submitText(); });
+
+  document.getElementById('cp-confirm').addEventListener('click', async function(){
+    const uen=document.getElementById('cp-uen').value.trim();
+    if(!uen){ document.getElementById('cp-uen').style.borderColor='#b91c1c'; return; }
+    document.getElementById('cp-overlay').style.display='none';
+    document.getElementById('cp-uen').value='';
+    await submitTextFromUEN(uen);
+  });
+});
+
+async function submitTextFromUEN(uen){
+  clearReplies(); hideInput();
+  S.node='sdl_uen';
+  const inp=document.getElementById('txt-inp');
+  if(inp) inp.value=uen;
+  await submitText();
+}
+
+async function submitText(){
+  const inp=document.getElementById('txt-inp');
+  const v=inp.value.trim(); if(!v) return;
+  inp.value=''; hideInput();
+  if(S.node==='career_email'){
+    clearReplies();
+    await addCard('user',v);
+    await addCard('bot',`A personalised list of SWDA-approved courses aligned to your career goals will be sent to <strong>${v}</strong> shortly.`,400);
+    setTimeout(()=>showEmailNotif(v,'SkillsFuture Course Recommendations','Your personalised course list is ready.'),800);
+    await addCard('bot','Would you like to speak with a Career Development Officer for further guidance?',800);
+    S.node='career_agent2';
+    setReplies([{label:'Yes, connect me',value:'agent_yes'},{label:'No, I\'m done',value:'agent_no'}]);
+    return;
+  }
+  if(S.node==='appeal_course'){
+    await handleReply(v,v); return;
+  }
+  if(S.node==='tp_course'){
+    clearReplies();
+    await addCard('user',v);
+    await showTriageHold('Routing to TPGateway team…');
+    await new Promise(r=>setTimeout(r,1500));
+    hideTriageHold();
+    updateFlow('tp',3);
+    await addCard('bot',`e-Attendance appeal registered for: <strong>"${v}"</strong>. Case routed directly to the TPGateway team — no transfer required.`,400);
+    await addCustomCard(`<div class="ef-card">
+      <div class="ef-header">Case Created — e-Attendance Appeal</div>
+      <div class="ef-row"><span class="ef-key">Course</span><span class="ef-val">${v}</span></div>
+      <div class="ef-row"><span class="ef-key">Segment</span><span class="ef-val">Training Provider</span></div>
+      <div class="ef-row"><span class="ef-key">Division</span><span class="ef-val blue">TPGateway (direct — no transfer)</span></div>
+      <div class="ef-row"><span class="ef-key">Acknowledgement</span><span class="ef-val">1 working day</span></div>
+      <div class="ef-row"><span class="ef-key">Decision SLA</span><span class="ef-val">3 working days</span></div>
+      <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
+    </div>`,400);
+    setTimeout(()=>showEmailNotif(null,'e-Attendance Appeal Received — SWDA',`Appeal for "${v}" received.`),700);
+    updateFlow('tp',4);
+    await endFlow();
+    return;
+  }
+  if(S.node==='sdl_payroll'){
+    clearReplies();
+    await addCard('user',v);
+    const payroll=parseFloat(v.replace(/[^0-9.]/g,''))||50000;
+    const sdl=Math.min(payroll*0.0025,11.25*Math.ceil(payroll/4500));
+    await addCard('bot',`Based on a monthly payroll of <strong>$${Number(payroll).toLocaleString()}</strong>, the estimated SDL contribution is <strong>$${(payroll*0.0025).toFixed(2)}</strong> per month (rate: 0.25%).`,400);
+    await addCard('bot','This is an estimate only. For a confirmed computation or to raise a formal query, please visit <strong>service-portal.skillsfuture.gov.sg</strong> or submit via the SDL e-Service portal.',700);
+    await endFlow();
+    return;
+  }
+  if(S.node==='sdl_uen'){
+    clearReplies();
+    await addCard('user',v);
+    const uen=v.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    const holdEl=document.createElement('div');
+    holdEl.className='ivr-card triage'; holdEl.id='sdl-hold';
+    holdEl.innerHTML='<div class="triage-music">🧮</div><div class="triage-title">Retrieving SDL assessment…</div><div class="triage-sub">Fetching Q1 2025 assessment for '+uen+'</div><div class="triage-dots"><div class="triage-dot"></div><div class="triage-dot"></div><div class="triage-dot"></div><div class="triage-dot"></div></div>';
+    const disp=document.getElementById('ivr-display');
+    if(disp){disp.appendChild(holdEl);scrollDown();}
+    await new Promise(r=>setTimeout(r,2800));
+    const hc=document.getElementById('sdl-hold'); if(hc) hc.remove();
+    updateFlow('sdl',3);
+    await addCard('bot',`UEN <strong>${uen}</strong> verified. Your SDL assessment for Q1 2025:`,300);
+    await addCustomCard(`<div class="ef-card">
+      <div class="ef-header">SDL Assessment — Q1 2025</div>
+      <div class="ef-row"><span class="ef-key">UEN</span><span class="ef-val blue">${uen}</span></div>
+      <div class="ef-row"><span class="ef-key">Total payroll</span><span class="ef-val">$84,000</span></div>
+      <div class="ef-row"><span class="ef-key">SDL rate</span><span class="ef-val">0.25%</span></div>
+      <div class="ef-row"><span class="ef-key">SDL levy</span><span class="ef-val">$210.00 / month</span></div>
+      <div class="ef-row"><span class="ef-key">Cap check</span><span class="ef-val green">Within cap ✓</span></div>
+    </div>`,500);
+    await addCard('bot','A full breakdown and the SDL calculator link have been sent to your registered company email.',600);
+    showEmailNotif(null,'SDL Computation Breakdown — SWDA','Your Q1 2025 SDL assessment: $210.00/month');
+    updateFlow('sdl',4);
+    await endFlow();
+    return;
+  }
+  if(S.node==='sfec_detail'){
+    clearReplies();
+    await addCard('user',v);
+    await addCard('bot','Your SFEC question has been added to the case. An SFEC officer will follow up within <strong>2 working days</strong>.',400);
+    await addCustomCard(`<div class="ef-card">
+      <div class="ef-header">Case Created — SFEC Enquiry</div>
+      <div class="ef-row"><span class="ef-key">Case ID</span><span class="ef-val blue">CRM-2026-59105</span></div>
+      <div class="ef-row"><span class="ef-key">Question</span><span class="ef-val">${v.length>42?v.substring(0,42)+'…':v}</span></div>
+      <div class="ef-row"><span class="ef-key">Follow-up SLA</span><span class="ef-val">2 working days</span></div>
+      <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
+    </div>`,300);
+    updateFlow('sfec',4);
+    await endFlow();
+    return;
+  }
+  await handleReply(v,v);
+}
+
+function setActiveScenarioBtn(sc){
+  document.querySelectorAll('.tb[data-sc]').forEach(b=>{
+    b.classList.toggle('active', b.dataset.sc===sc);
+  });
+}
+
+async function jumpTo(sc){
+  focusPhone();
+  setActiveScenarioBtn(sc);
+  populateObsTasks(sc);
+  obsRating=0; setObsRating(0);
+  const obsN=document.getElementById('obs-notes'); if(obsN) obsN.value='';
+  const obsI=document.getElementById('obs-issues'); if(obsI) obsI.value='';
+  await hardReset(false);
+
+  if(sc==='voicemail'){
+    S.scenario='voicemail';
+    S.lang='English'; S.accType='Individual';
+    await addCard('system','— Call connected —',200);
+    wave(true);
+    await addCard('bot','Thank you for calling <strong>SkillsFuture Singapore</strong> and <strong>Workforce Singapore</strong>.',600);
+    wave(false);
+    await doVoicemail();
+    return;
+  }
+
+  if(sc==='ef'){
+    S.scenario='ef';
+    S.lang='English'; S.accType='Individual';
+    updateFlow('ef',0);
+    await addCard('system','— EF outbound call initiated by officer dashboard —',200);
+    wave(true);
+    await new Promise(r=>setTimeout(r,500));
+    wave(false);
+    await doEF();
+    return;
+  }
+
+  const segMap={balance:'Individual',appeal:'Individual',career:'Individual',sdl:'Employer',sfec:'Employer',tp:'Training Provider'};
+  const segKeyMap={Individual:'1',Employer:'2','Training Provider':'3'};
+  const labelMap={
+    balance:'Check my SkillsFuture Credit balance',
+    appeal:'Appeal for an unlisted course',
+    career:'Career advisory — upskilling pathway',
+    sdl:'SDL computation or appeal query',
+    sfec:'SFEC enquiry for my company',
+    tp:'e-Attendance appeal for a course'
+  };
+  const seg=segMap[sc]||'Individual';
+  S.lang='English'; S.accType=seg;
+  updateFlow('main',0);
+  await addCard('system','— Call connected —',200);
+  wave(true);
+  await addCard('bot','Thank you for calling <strong>Skills and Workforce Development Agency</strong>. For English, please press <strong>1</strong>.<br>要选择<strong>华语</strong>，请按 <strong>2</strong>。',600);
+  wave(false);
+  await new Promise(r=>setTimeout(r,600));
+  await addCard('user','<strong>1</strong> — English',0);
+  await addCard('system','✓ Language set to English',300);
+  updateFlow('main',1);
+  await addCard('bot',`Are you calling as an <strong>Individual</strong>, on behalf of an <strong>Employer</strong>, or as a <strong>Training Provider</strong>?<br>Press <strong>1</strong> for Individual &nbsp;·&nbsp; <strong>2</strong> for Employer &nbsp;·&nbsp; <strong>3</strong> for Training Provider.`,500);
+  await new Promise(r=>setTimeout(r,600));
+  await addCard('user',`<strong>${segKeyMap[seg]}</strong> — ${seg}`,0);
+  await addCard('system',`✓ Profile: ${seg}`,300);
+  updateFlow('main',2);
+  await addCard('bot',`Thank you. You are connected as an <strong>${seg}</strong>. How may I assist you today?`,400);
+  S.node='menu';
+  setTimeout(async()=>{ await handleReply(sc, labelMap[sc]||sc); },800);
+}
+
+async function hardReset(greet=true){
+  clearInterval(timerInt);
+  S={node:'dialing',lang:null,accType:null,scenario:null,courseName:'',selDate:null,selTime:null,timerSec:0};
+  document.getElementById('ivr-display').innerHTML='';
+  document.getElementById('qr-area').innerHTML='';
+  document.getElementById('keypad-wrap').innerHTML='';
+  document.getElementById('inp-bar').style.display='none';
+  document.getElementById('sp-overlay').style.display='none';
+  document.getElementById('cp-overlay').style.display='none';
+  document.getElementById('dur').textContent='00:00';
+  updateFlow('main',-1);
+  wave(false);
+  startTimer();
+  if(greet) await boot();
+}
+
+async function boot(){
+  await addCard('system','— Call connected —',200);
+  wave(true);
+  await addCard('bot','Thank you for calling <strong>Skills and Workforce Development Agency</strong>. For English, please press <strong>1</strong>.<br>要选择<strong>华语</strong>，请按 <strong>2</strong>。',800);
+  showKeypad(['1','2']);
+  document.getElementById('kpad-hint').textContent='Press 1 for English, 2 for 华语';
+  S.node='lang_select';
+  wave(false);
+}
+
+function showEmailNotif(toAddress, subject, preview){
+  const el=document.getElementById('email-notif');
+  const titleEl=document.getElementById('notif-title');
+  const msgEl=document.getElementById('notif-msg');
+  const timeEl=document.getElementById('notif-time');
+  if(!el) return;
+  titleEl.textContent=subject||'New message from SWDA';
+  msgEl.textContent=preview||'You have a new message';
+  const now=new Date();
+  timeEl.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  el.classList.add('show');
+  setTimeout(()=>{ el.classList.remove('show'); },4000);
+}
+
+function focusPhone(){
+  const PHONE_W=334,PHONE_H=702;
+  const TRACKER_W=220,GAP=32,PAD=48;
+  const vw=window.innerWidth;
+  const vh=window.innerHeight;
+  const availW=vw-TRACKER_W-GAP-PAD;
+  const availH=vh-PAD;
+  const maxW=Math.min(availW,554);
+  const scaleByW=maxW/PHONE_W;
+  const scaleByH=(vh-48)/PHONE_H;
+  const scale=Math.min(scaleByW,scaleByH,554/PHONE_W);
+  document.documentElement.style.setProperty('--phone-scale',scale.toFixed(4));
+  document.getElementById('root').classList.add('focused');
+  document.body.classList.add('phone-focused');
+  document.documentElement.classList.add('phone-focused');
+}
+function unfocusPhone(){
+  document.getElementById('root').classList.remove('focused');
+  document.body.classList.remove('phone-focused');
+  document.documentElement.classList.remove('phone-focused');
+  document.documentElement.style.setProperty('--phone-scale','1');
+  document.getElementById('obs-panel').classList.remove('obs-visible');
+}
+function closeAndReset(){
+  unfocusPhone();
+  setActiveScenarioBtn(null);
+  hardReset(true);
+}
+
+function updateFlow(flowKey,stepIdx){
+  const flow=FLOWS[flowKey]||FLOWS['main'];
+  const scenarioEl=document.getElementById('tr-scenario');
+  const stepsEl=document.getElementById('tr-steps');
+  if(!scenarioEl||!stepsEl) return;
+  scenarioEl.textContent=flow.title;
+  stepsEl.innerHTML='';
+  flow.steps.forEach((step,i)=>{
+    const row=document.createElement('div');
+    row.className='tr-step';
+    const dot=document.createElement('div');
+    const lbl=document.createElement('div');
+    lbl.textContent=step;
+    if(stepIdx===-1)       { dot.className='tr-dot';        lbl.className='tr-label'; }
+    else if(i<stepIdx)     { dot.className='tr-dot done';   lbl.className='tr-label done'; }
+    else if(i===stepIdx)   { dot.className='tr-dot active'; lbl.className='tr-label active'; }
+    else                   { dot.className='tr-dot';        lbl.className='tr-label'; }
+    row.appendChild(dot); row.appendChild(lbl); stepsEl.appendChild(row);
+  });
+}
+
+async function showTriageHold(){
+  const d=document.getElementById('ivr-display');
+  if(!d) return;
+  const card=document.createElement('div');
+  card.className='ivr-card triage';
+  card.id='triage-card';
+  card.innerHTML=`
+    <div class="triage-music">🎵</div>
+    <div class="triage-title">AI assistant is analysing your request…</div>
+    <div class="triage-sub">Please hold — this will only take a moment</div>
+    <div class="triage-dots">
+      <div class="triage-dot"></div><div class="triage-dot"></div>
+      <div class="triage-dot"></div><div class="triage-dot"></div>
+    </div>`;
+  d.appendChild(card);
+  scrollDown();
+}
+
+function hideTriageHold(){
+  const card=document.getElementById('triage-card');
+  if(card) card.remove();
+}
+
+window.addEventListener('resize',()=>{
+  if(document.getElementById('root').classList.contains('focused')) focusPhone();
+});
+
+startClock();
+hardReset(true);
+
+// ── SESSION ID
+document.addEventListener('DOMContentLoaded',function(){
+  const sid='TS-'+Date.now().toString(36).toUpperCase();
+  const el=document.getElementById('session-id');
+  if(el) el.textContent='Session: '+sid;
+});
+
+// ── SCENARIO TASK DEFINITIONS
+const SC_TASKS_DEF = {
+  balance:['AI captures intent without pressing a number','Singpass overlay appears and accepts NRIC','Balance card displays with correct fields','Email notification shows after resolution','Case closed without agent involvement'],
+  appeal:['Intent classified as complex (not self-served)','AI prompts for course name via text input','Appeal case card displayed with course name','Officer queue assignment shown','Reference number and SLA communicated'],
+  career:['AI identifies career advisory intent','Branch: portal visited vs not visited works','Email field accepted for non-portal users','Course recommendation email notification sent','CDO connect option presented at end'],
+  sdl:['Employer segment identified correctly','Intent classified: compute vs appeal','Corppass UEN overlay appears for compute','SDL levy calculation card displayed','Email notification sent with breakdown'],
+  sfec:['Employer segment identified correctly','SFEC question captured correctly','Case created with enquiry details','2-day follow-up SLA communicated','Case ID shown to citizen'],
+  tp:['Training Provider segment selected','e-Attendance intent classified correctly','Course ID captured via text input','Case routed direct to TPGateway (no transfer)','3-day decision SLA communicated'],
+  ef:['AI-initiated outbound flow starts correctly','Appointment details read back accurately','Reschedule option triggers calendar picker','Date and time selection works','CRM card shows updated slot + SMS scheduled'],
+  voicemail:['Surge message replaced with voicemail offer','Voicemail recording card displayed','Transcript shown with intent classification','Named entities extracted','CRM case auto-created with full context']
+};
+
+let obsRating=0;
+const obsLog=[];
+
+function populateObsTasks(scId){
+  const nameEl=document.getElementById('obs-scenario-name');
+  const tasksEl=document.getElementById('obs-tasks');
+  if(nameEl) nameEl.textContent=scId||'—';
+  if(!tasksEl) return;
+  const tasks=SC_TASKS_DEF[scId]||[];
+  tasksEl.innerHTML=tasks.map((t,i)=>`
+    <div onclick="obsToggleTask(this,${i})" style="display:flex;align-items:flex-start;gap:5px;padding:2px 0;cursor:pointer">
+      <div data-task="${i}" style="width:13px;height:13px;border:1.5px solid var(--gy3);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.15s"></div>
+      <div style="font-size:10px;color:var(--gy5);line-height:1.4">${t}</div>
+    </div>`).join('');
+}
+
+function obsToggleTask(row,idx){
+  const cb=row.querySelector('[data-task]');
+  if(!cb) return;
+  const on=cb.style.background==='var(--tl)';
+  cb.style.background=on?'':'var(--tl)';
+  cb.style.borderColor=on?'var(--gy3)':'var(--tl)';
+  cb.innerHTML=on?'':'<span style="color:#fff;font-size:8px;font-weight:700">✓</span>';
+  const lbl=row.querySelector('div:last-child');
+  if(lbl){lbl.style.textDecoration=on?'none':'line-through';lbl.style.color=on?'var(--gy5)':'var(--gy4)';}
+}
+
+function setObsRating(val){
+  obsRating=val;
+  document.querySelectorAll('#obs-stars button').forEach((b,i)=>{
+    const on=i<val;
+    b.style.opacity=on?'1':'0.2';
+    b.style.color=on?'#f59e0b':'var(--gy9)';
+  });
+}
+
+function saveObsNote(){
+  const notes=(document.getElementById('obs-notes')||{}).value||'';
+  const issues=(document.getElementById('obs-issues')||{}).value||'';
+  const tasks=SC_TASKS_DEF[S.scenario]||[];
+  const taskEls=document.querySelectorAll('#obs-tasks [data-task]');
+  const done=[...taskEls].filter(e=>e.style.background==='var(--tl)').length;
+  obsLog.push({scenario:S.scenario||'free',ts:new Date().toLocaleTimeString(),notes,issues,rating:obsRating,tasksCompleted:done,tasksTotal:tasks.length});
+  renderObsLog();
+  const saved=document.getElementById('obs-saved');
+  if(saved){saved.style.display='block';setTimeout(()=>{saved.style.display='none';},2200);}
+  if(document.getElementById('obs-notes')) document.getElementById('obs-notes').value='';
+  if(document.getElementById('obs-issues')) document.getElementById('obs-issues').value='';
+  setObsRating(0);
+}
+
+function renderObsLog(){
+  const log=document.getElementById('obs-log'); if(!log) return;
+  if(!obsLog.length){log.innerHTML='<div style="font-size:10px;color:var(--gy4)">No notes yet</div>';return;}
+  log.innerHTML=[...obsLog].reverse().map(r=>`
+    <div style="background:var(--gy1);border-radius:8px;padding:7px 8px;border-left:2px solid var(--bl2)">
+      <div style="font-size:9.5px;font-weight:600;color:var(--bl);margin-bottom:2px">${r.scenario||'free'} · ${r.ts} · ${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</div>
+      ${r.notes?`<div style="font-size:10px;color:var(--gy5);line-height:1.4;margin-bottom:2px">${r.notes}</div>`:''}
+      ${r.issues?`<div style="font-size:10px;color:#92400e;line-height:1.4">⚠ ${r.issues}</div>`:''}
+      <div style="font-size:9px;color:var(--gy4);margin-top:2px">Tasks: ${r.tasksCompleted}/${r.tasksTotal}</div>
+    </div>`).join('');
+}
+
+renderObsLog();
+</script>
+</body>
+</html>
