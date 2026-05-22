@@ -32,9 +32,9 @@ html.phone-focused{overflow:hidden;height:100vh}
 .panel{transition:opacity 0.3s ease,transform 0.35s cubic-bezier(0.4,0,0.2,1),width 0.35s cubic-bezier(0.4,0,0.2,1);opacity:1;transform:translateX(0);width:auto;overflow:hidden}
 .root.focused .panel{opacity:0;transform:translateX(24px);pointer-events:none;position:absolute;width:0;min-width:0;padding:0;margin:0;overflow:hidden;visibility:hidden}
 
-.focus-stage{display:flex;align-items:flex-start;gap:24px;transition:margin 0.35s cubic-bezier(0.4,0,0.2,1)}
-.root.focused{position:fixed;inset:0;z-index:50;background:var(--gy1);overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center;padding:0;gap:0}
-.root.focused .focus-stage{display:flex;flex-direction:row;align-items:flex-start;justify-content:center;gap:32px;padding:24px 0 24px 0;margin-left:auto;margin-right:auto}
+.focus-stage{display:flex;align-items:flex-start;gap:24px;transition:margin 0.35s cubic-bezier(0.4,0,0.2,1);overflow:visible}
+.root.focused{position:fixed;inset:0;z-index:50;background:var(--gy1);height:100vh;width:100vw;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:0;gap:0}
+.root.focused .focus-stage{display:flex;flex-direction:row;align-items:flex-start;justify-content:center;gap:32px;padding:16px 0 16px 0;margin:auto}
 
 .phone{transition:transform 0.38s cubic-bezier(0.34,1.22,0.64,1),box-shadow 0.35s ease;transform-origin:top center}
 .root.focused .phone{transform:scale(var(--phone-scale,1));transform-origin:top center;box-shadow:0 32px 80px rgba(26,61,110,0.28),0 8px 24px rgba(0,0,0,0.18)}
@@ -138,7 +138,7 @@ html.phone-focused{overflow:hidden;height:100vh}
 .wb.still{animation:none;height:3px;opacity:0.2}
 
 /* IVR SCREEN */
-.ivr-screen{flex:1;display:flex;flex-direction:column;background:var(--gy1);overflow:hidden}
+.ivr-screen{flex:1;display:flex;flex-direction:column;background:var(--gy1);overflow:hidden;position:relative}
 .ivr-display{flex:1;overflow-y:auto;padding:14px}
 .ivr-display::-webkit-scrollbar{width:3px}
 .ivr-display::-webkit-scrollbar-thumb{background:var(--gy3);border-radius:2px}
@@ -156,16 +156,28 @@ html.phone-focused{overflow:hidden;height:100vh}
 .ivr-text strong{font-weight:600;color:var(--bl)}
 .ivr-text.zh{font-size:13px}
 
+/* RESET TOOLBAR */
+.reset-toolbar{display:none;align-items:center;justify-content:center;margin-top:14px}
+.reset-toolbar-inner{display:flex;align-items:center;justify-content:flex-end;width:100%;background:#fff;border:0.5px solid var(--gy3);border-radius:8px;padding:6px 12px}
+.reset-toolbar-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:0.5px solid var(--gy3);border-radius:6px;font-size:11px;font-weight:500;color:var(--gy5);cursor:pointer;font-family:var(--fn);transition:all 0.12s}
+.reset-toolbar-btn:hover{background:var(--gy2);border-color:var(--gy4)}
+
+/* RESET TOOLBAR */
+.kpad-toggle{position:absolute;bottom:12px;right:12px;width:32px;height:32px;border-radius:50%;background:var(--bl3);border:0.5px solid var(--bl2);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:15;transition:all 0.15s;box-shadow:0 2px 8px rgba(26,61,110,0.15)}
+.kpad-toggle:hover{background:var(--bl2)}
+.kpad-toggle:hover svg{fill:#fff}
+.kpad-toggle svg{width:16px;height:16px;fill:var(--bl2);transition:fill 0.15s}
+
 /* KEYPAD */
-.keypad-area{flex-shrink:0;background:#fff;border-top:0.5px solid var(--gy3);padding:12px}
-.keypad-hint{font-size:10px;color:var(--gy4);text-align:center;margin-bottom:10px;letter-spacing:0.2px}
-.keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:200px;margin:0 auto}
-.key-btn{aspect-ratio:1;background:var(--gy2);border:none;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.12s;font-family:var(--fn)}
+.keypad-area{flex-shrink:0;background:#fff;border-top:0.5px solid var(--gy3);padding:8px;max-height:203px;overflow:hidden}
+.keypad-hint{font-size:10px;color:var(--gy4);text-align:center;margin-bottom:6px;letter-spacing:0.2px}
+.keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-width:160px;margin:0 auto}
+.key-btn{height:36px;background:var(--gy2);border:none;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.12s;font-family:var(--fn)}
 .key-btn:hover{background:var(--gy3)}
 .key-btn:active{transform:scale(0.93);background:var(--bl2)}
 .key-btn:active .key-num{color:#fff}
 .key-btn.highlight{background:var(--gy2)}
-.key-num{font-size:18px;font-weight:300;color:var(--gy9);line-height:1}
+.key-num{font-size:15px;font-weight:300;color:var(--gy9);line-height:1}
 .key-sub{display:none}
 .key-action{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:50%;transition:all 0.12s}
 .key-action:hover{background:var(--gy2)}
@@ -245,7 +257,7 @@ html.phone-focused{overflow:hidden;height:100vh}
 .vm-wb:nth-child(5){height:14px}
 .vm-wb:nth-child(7){height:18px}
 .vm-wb:nth-child(9){height:10px}
-.vm-transcript{font-size:11px;color:var(--gy5);line-height:1.55;background:var(--gy1);border-radius:8px;padding:8px 10px;margin-bottom:8px;border-left:2px solid var(--bl2)}
+.vm-transcript{font-size:11px;color:var(--gy4);line-height:1.55;background:var(--gy1);border-radius:8px;padding:8px 10px;margin-bottom:8px;border-left:2px solid var(--bl2)}
 .vm-badge{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;padding:3px 8px;border-radius:8px;font-weight:500}
 .vm-badge.intent{background:#e0f2fe;color:#0369a1;border:0.5px solid #7dd3fc}
 .vm-badge.priority{background:#fef3c7;color:#92400e;border:0.5px solid #fcd34d}
@@ -254,10 +266,10 @@ html.phone-focused{overflow:hidden;height:100vh}
 /* EF OUTBOUND CARD */
 .ef-card{background:#fff;border:0.5px solid var(--gy3);border-radius:12px;padding:12px 14px;margin:6px 0}
 .ef-header{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--gy4);margin-bottom:8px}
-.ef-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--gy2)}
+.ef-row{display:flex;justify-content:space-between;padding:2px 0;border-bottom:0.5px solid var(--gy2)}
 .ef-row:last-child{border-bottom:none}
-.ef-key{font-size:11px;color:var(--gy5)}
-.ef-val{font-size:11px;font-weight:500;color:var(--gy9)}
+.ef-key{font-size:11px;color:var(--gy4)}
+.ef-val{font-size:11px;color:var(--gy7)}
 .ef-val.green{color:var(--gn)}
 .ef-val.blue{color:var(--bl2)}
 
@@ -310,6 +322,7 @@ html.phone-focused{overflow:hidden;height:100vh}
 <div class="root" id="root">
 
   <div class="focus-stage">
+    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:334px">
     <div class="phone" id="phone-frame">
       <button class="phone-close-btn" onclick="closeAndReset()" title="Close &amp; reset">&#x2715;</button>
       <div class="notch"></div>
@@ -371,6 +384,9 @@ html.phone-focused{overflow:hidden;height:100vh}
         <div class="ivr-screen">
           <div class="ivr-display" id="ivr-display"></div>
           <div class="qr-area" id="qr-area"></div>
+          <button class="kpad-toggle" id="kpad-toggle" onclick="toggleKeypad()" style="display:none" title="Toggle keypad">
+            <svg id="kpad-toggle-icon" viewBox="0 0 24 24"><path d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg>
+          </button>
           <div id="keypad-wrap"></div>
           <div class="inp-bar" id="inp-bar" style="display:none">
             <div class="mic-btn">
@@ -436,8 +452,16 @@ html.phone-focused{overflow:hidden;height:100vh}
       </div>
     </div>
 
+    </div><!-- end phone -->
+    <div class="reset-toolbar">
+      <div class="reset-toolbar-inner">
+        <button class="reset-toolbar-btn" onclick="closeAndReset()">↺ &nbsp; Reset to IVR start</button>
+      </div>
+    </div>
+    </div><!-- end phone column wrapper -->
+
     <!-- JOURNEY TRACKER -->
-    <div class="tracker" id="tracker">
+    <div class="tracker" id="tracker" style="display:none">
       <div class="tracker-inner">
         <div class="tracker-title">Journey tracker</div>
         <div class="tracker-scenario" id="tr-scenario">—</div>
@@ -482,8 +506,8 @@ html.phone-focused{overflow:hidden;height:100vh}
     </div>
   </div>
 
-  <!-- PANEL -->
-  <div class="panel">
+  <!-- PANEL (hidden for participant testing) -->
+  <div class="panel" style="display:none">
     <div class="ptitle">Testing Panel</div>
 
     <div class="info-card">
@@ -519,7 +543,7 @@ html.phone-focused{overflow:hidden;height:100vh}
       </button>
       <button class="tb" data-sc="sfec" onclick="jumpTo('sfec')">
         <div class="tb-ico" style="background:#fdf4ff">🏢</div>
-        <div class="tb-body"><div class="tb-lbl">SFEC Enquiry</div><div class="tb-desc">Enterprise credit · case creation</div></div>
+        <div class="tb-body"><div class="tb-lbl">${S.accType} - ${S.flowLabel} - Callback Request</div><div class="tb-desc">Enterprise credit · case creation</div></div>
         <div class="tb-badge b-appt">Employer</div>
       </button>
     </div>
@@ -527,7 +551,7 @@ html.phone-focused{overflow:hidden;height:100vh}
       <div class="psec-lbl">Training Providers</div>
       <button class="tb" data-sc="tp" onclick="jumpTo('tp')">
         <div class="tb-ico" style="background:#f0fdfa">🏫</div>
-        <div class="tb-body"><div class="tb-lbl">e-Attendance Appeal</div><div class="tb-desc">Direct TPGateway routing · no transfer</div></div>
+        <div class="tb-body"><div class="tb-lbl">${S.accType} — e-Attendance Appeal</div><div class="tb-desc">Direct TPGateway routing · no transfer</div></div>
         <div class="tb-badge b-ai" style="background:#f0fdfa;color:#134e4a;border:0.5px solid #99f6e0">TP</div>
       </button>
     </div>
@@ -537,15 +561,23 @@ html.phone-focused{overflow:hidden;height:100vh}
 </div>
 
 <script>
+function genCallerNumber(){
+  const first=Math.random()<0.5?'8':'9';
+  let rest='';
+  for(let i=0;i<7;i++) rest+=Math.floor(Math.random()*10);
+  return first+rest;
+}
+
 let S = {
   node: 'dialing',
   lang: null,
   accType: null,
   scenario: null,
-  courseName: '',
   selDate: null,
   selTime: null,
-  timerSec: 0
+  timerSec: 0,
+  callerNumber: genCallerNumber(),
+  pendingNumber: ''
 };
 let timerInt = null;
 let clockInt = null;
@@ -607,7 +639,7 @@ function addCard(type, content, delay=0){
       const c=document.createElement('div');
       c.className='ivr-card '+type;
       if(type==='bot'){
-        c.innerHTML=`<div class="ivr-label">SWDA Assistant</div><div class="ivr-text">${content}</div>`;
+        c.innerHTML=`<div class="ivr-label">Helix Bot</div><div class="ivr-text">${content}</div>`;
         wave(true);setTimeout(()=>wave(false),1600);
       } else if(type==='user'){
         c.innerHTML=`<div class="ivr-label">You pressed / said</div><div class="ivr-text">${content}</div>`;
@@ -673,44 +705,162 @@ function showKeypad(highlight=[]){
   });
   grid+='</div>';
   wrap.innerHTML=`<div class="keypad-area"><div class="keypad-hint" id="kpad-hint">Press a key</div>${grid}</div>`;
+  S.keypadVisible=true;
+  const btn=document.getElementById('kpad-toggle');
+  if(btn){
+    btn.style.display='flex';
+    btn.title='Minimise keypad';
+    btn.querySelector('svg').innerHTML='<path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>';
+  }
 }
 
-function hideKeypad(){ document.getElementById('keypad-wrap').innerHTML=''; }
+function hideKeypad(){
+  document.getElementById('keypad-wrap').innerHTML='';
+  S.keypadVisible=false;
+  const btn=document.getElementById('kpad-toggle');
+  if(btn) btn.style.display='none';
+}
+
+let _keypadSnapshot=null;
+let _keypadHighlight=[];
+
+function showContactKeypad(){
+  S.pendingDigits='';
+  showKeypad([]);
+  document.getElementById('kpad-hint').innerHTML='Key in contact number, press <strong>#</strong> to confirm';
+}
+
+function updateDigitDisplay(){
+  const hint=document.getElementById('kpad-hint');
+  if(hint) hint.innerHTML=S.pendingDigits
+    ? `<span style="font-family:var(--fm);font-size:14px;letter-spacing:2px;color:var(--gy9)">${S.pendingDigits}</span>&nbsp; press <strong>#</strong> to confirm`
+    : 'Key in contact number, press <strong>#</strong> to confirm';
+}
+
+function toggleKeypad(){
+  const wrap=document.getElementById('keypad-wrap');
+  const btn=document.getElementById('kpad-toggle');
+  if(S.keypadVisible){
+    _keypadSnapshot=wrap.innerHTML;
+    wrap.style.display='none';
+    S.keypadVisible=false;
+    btn.title='Show keypad';
+    btn.querySelector('svg').innerHTML='<path d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>';
+  } else {
+    wrap.style.display='';
+    S.keypadVisible=true;
+    btn.title='Minimise keypad';
+    btn.querySelector('svg').innerHTML='<path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>';
+  }
+}
 function showInput(ph){ document.getElementById('inp-bar').style.display='flex'; if(ph) document.getElementById('txt-inp').placeholder=ph; document.getElementById('txt-inp').focus(); }
 function hideInput(){ document.getElementById('inp-bar').style.display='none'; }
 
 async function pressKey(k){
+  const contactNodes=['callback_new_number','ef_reschedule_new_number','tp_callback_new_number','sfec_callback_new_number'];
+  if(S.node==='sdl_payroll'){
+    if(k==='#'){
+      if(!S.pendingDigits) return;
+      const raw=S.pendingDigits;
+      hideKeypad();
+      await addCard('user','$'+Number(raw).toLocaleString());
+      const payroll=parseFloat(raw)||50000;
+      await addCard('bot',`Based on a monthly payroll of <strong>$${Number(payroll).toLocaleString()}</strong>, the estimated SDL contribution is <strong>$${(payroll*0.0025).toFixed(2)}</strong> per month (rate: 0.25%).`,400);
+      await addCard('bot','This is an estimate only. For a confirmed computation or to raise a formal query, please visit the <strong>SWDA Service Portal</strong> or submit via the <strong>SDL e-Service</strong>.',700);
+      S.pendingDigits='';
+      await endFlow();
+    } else if(k==='*'){
+      S.pendingDigits=S.pendingDigits.slice(0,-1);
+      const hint=document.getElementById('kpad-hint');
+      if(hint) hint.innerHTML=S.pendingDigits?`<span style="font-family:var(--fm);font-size:14px;letter-spacing:2px;color:var(--gy9)">$${Number(S.pendingDigits).toLocaleString()}</span>&nbsp; press <strong>#</strong> to confirm`:'Key in payroll amount, press <strong>#</strong> to confirm';
+    } else if(/[0-9]/.test(k)){
+      S.pendingDigits+=k;
+      const hint=document.getElementById('kpad-hint');
+      if(hint) hint.innerHTML=`<span style="font-family:var(--fm);font-size:14px;letter-spacing:2px;color:var(--gy9)">$${Number(S.pendingDigits).toLocaleString()}</span>&nbsp; press <strong>#</strong> to confirm`;
+    }
+    return;
+  }
+  if(contactNodes.includes(S.node)){
+    if(k==='#'){
+      if(!S.pendingDigits) return;
+      const raw=S.pendingDigits.replace(/[^0-9]/g,'');
+      const fmt=raw.length>=8?raw.slice(0,4)+' '+raw.slice(4):raw;
+      hideKeypad();
+      await addCard('user',fmt);
+      if(S.node==='callback_new_number'){
+        S.pendingNumber=raw;
+        await addCard('bot',`I have <strong>${fmt}</strong> — is that correct?`,400);
+        setReplies([{label:'Positive voice response',value:'ccn_yes'},{label:'Negative voice response',value:'ccn_no'}]);
+        S.node='callback_confirm_new';
+      } else if(S.node==='ef_reschedule_new_number'){
+        await addCard('bot',`Got it. A rescheduling link has been sent to <strong>${fmt}</strong>. The link is valid for <strong>48 hours</strong>.`,400);
+        await addCustomCard(`<div class="ef-card">
+          <div class="ef-header">CRM Note — SMS Scheduled</div>
+          <div class="ef-row"><span class="ef-key">Action</span><span class="ef-val">SMS scheduled</span></div>
+          <div class="ef-row"><span class="ef-key">Sent to</span><span class="ef-val">${fmt}</span></div>
+          <div class="ef-row"><span class="ef-key">Content</span><span class="ef-val">Appointment rescheduling link</span></div>
+          <div class="ef-row"><span class="ef-key">Link expiry</span><span class="ef-val">48 hours</span></div>
+          <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Sent ✓</span></div>
+        </div>`,400);
+        await endFlow();
+      } else if(S.node==='tp_callback_new_number'){
+        S.tpCallbackNum=fmt;
+        await addCard('bot','Please describe your reason for calling in detail, to help us serve you better when we call back.',400);
+        showInput('Describe your enquiry…');
+        S.node='tp_notes';
+      } else if(S.node==='sfec_callback_new_number'){
+        S.sfecCallbackNum=fmt;
+        await addCard('bot','Is there anything specific you\'d like to flag for the officer?',400);
+        showInput('Describe your SFEC question…');
+        S.node='sfec_notes';
+      }
+      S.pendingDigits='';
+    } else if(k==='*'){
+      S.pendingDigits=S.pendingDigits.slice(0,-1);
+      updateDigitDisplay();
+    } else if(/[0-9]/.test(k)){
+      S.pendingDigits+=k;
+      updateDigitDisplay();
+    }
+    return;
+  }
   if(S.node==='lang_select'){
     if(k==='1'){
       S.lang='English';
+      hideKeypad();
       await addCard('user','<strong>1</strong> — English');
       await addCard('system','✓ Language set to English',300);
-      await addCard('bot','Thank you. Are you calling as an <strong>Individual</strong>, on behalf of an <strong>Employer</strong>, or as a <strong>Training Provider</strong>?<br>Press <strong>1</strong> for Individual &nbsp;·&nbsp; <strong>2</strong> for Employer &nbsp;·&nbsp; <strong>3</strong> for Training Provider.',500);
-      showKeypad(['1','2','3']);
-      document.getElementById('kpad-hint').textContent='Press 1, 2 or 3';
+      await addCard('bot','Are you calling as an <strong>Individual</strong>, on behalf of an <strong>Employer</strong>, or as a <strong>Training Provider</strong>?',500);
+      setReplies([
+        {label:'Individual (voice response)',value:'acc_individual'},
+        {label:'Employer (voice response)',value:'acc_employer'},
+        {label:'Training Provider (voice response)',value:'acc_tp'}
+      ]);
       S.node='acc_select';
     } else if(k==='2'){
       S.lang='Chinese';
       await addCard('user','<strong>2</strong> — 华语');
-      await addCard('system','✓ 语言已设置为华语',300);
-      await addCard('bot','<span class="zh">感谢您。请按 <strong>1</strong> 选择个人，按 <strong>2</strong> 选择雇主，按 <strong>3</strong> 选择培训机构。</span>',500);
-      showKeypad(['1','2','3']);
-      document.getElementById('kpad-hint').textContent='按 1、2 或 3';
-      S.node='acc_select';
+      hideKeypad();
+      await addCard('bot','For Chinese assistance, you will be connected to a Chinese-speaking officer. / 我们将为您安排一位讲华语的客服专员。',400);
+      await addCard('system','— Joining queue for Chinese-speaking officer —',600);
+      const holdCard=document.createElement('div');
+      holdCard.className='ivr-card triage';
+      holdCard.innerHTML=`
+        <div class="triage-music">🎵</div>
+        <div class="triage-title">Playing hold music…</div>
+        <div class="triage-sub">An officer will be with you shortly</div>
+        <div class="triage-dots">
+          <div class="triage-dot"></div><div class="triage-dot"></div>
+          <div class="triage-dot"></div><div class="triage-dot"></div>
+        </div>`;
+      const display=document.getElementById('ivr-display');
+      if(display){ display.appendChild(holdCard); scrollDown(); }
+      S.node='done';
     }
     return;
   }
   if(S.node==='acc_select'){
-    const map={'1':'Individual','2':'Employer','3':'Training Provider'};
-    const zh_map={'1':'个人','2':'雇主','3':'培训机构'};
-    if(map[k]){
-      S.accType=map[k];
-      const label=S.lang==='Chinese'?zh_map[k]:map[k];
-      await addCard('user',`<strong>${k}</strong> — ${label}`);
-      await addCard('system',`✓ Profile: ${S.accType}`,300);
-      hideKeypad();
-      await showMainMenu();
-    }
+    // handled via quick reply chips
     return;
   }
 }
@@ -718,25 +868,27 @@ async function pressKey(k){
 async function showMainMenu(){
   S.node='main_menu';
   updateFlow('main',2);
-  await addCard('bot',`Thank you. You are connected as an <strong>${S.accType}</strong>. How may I assist you today?`,500);
   if(S.accType==='Individual'){
+    await addCard('bot','In a few words, please tell me why you\'re calling today — for example, <strong>\'check my SkillsFuture balance\'</strong> or <strong>\'appeal a course\'</strong>.',500);
     setReplies([
-      {label:'Check SFC Balance',value:'balance'},
-      {label:'Appeal a Course',value:'appeal'},
-      {label:'Career Advisory',value:'career'},
-      {label:'Manage Career Appointment',value:'ef'}
+      {label:'Check my SkillsFuture balance',value:'balance'},
+      {label:'Appeal a course',value:'appeal'},
+      {label:'Career advisory',value:'career'},
+      {label:'Manage career appointment',value:'ef'}
     ]);
   } else if(S.accType==='Employer'){
+    await addCard('bot','In a few words, please tell me why you\'re calling today — for example, <strong>\'SDL computation query\'</strong> or <strong>\'SFEC enquiry\'</strong>.',500);
     setReplies([
-      {label:'SDL Enquiry',value:'sdl'},
-      {label:'SkillsFuture Enterprise Credit',value:'sfec'},
-      {label:'Other Enquiry',value:'other'}
+      {label:'SDL computation query',value:'sdl'},
+      {label:'SFEC enquiry',value:'sfec'},
+      {label:'Other enquiry',value:'other'}
     ]);
   } else {
+    await addCard('bot','In a few words, please tell me why you\'re calling today — for example, <strong>\'e-Attendance appeal\'</strong> or <strong>\'programme enquiry\'</strong>.',500);
     setReplies([
-      {label:'e-Attendance Appeal',value:'tp_attendance'},
-      {label:'Programme Enquiry',value:'other'},
-      {label:'Other Enquiry',value:'other'}
+      {label:'e-Attendance appeal',value:'tp_attendance'},
+      {label:'Programme enquiry',value:'tp_programme'},
+      {label:'Other enquiry',value:'tp_other'}
     ]);
   }
 }
@@ -745,22 +897,40 @@ async function handleReply(value, label){
   clearReplies(); hideKeypad(); hideInput();
   await addCard('user', label);
 
+  if(value==='acc_individual'||value==='acc_employer'||value==='acc_tp'){
+    const map={acc_individual:'Individual',acc_employer:'Employer',acc_tp:'Training Provider'};
+    S.accType=map[value];
+    clearReplies();
+    await addCard('system',`✓ Profile: ${S.accType}`,300);
+    await showMainMenu();
+    return;
+  }
+
   if(value==='new_query'){
     updateFlow('main',-1);
     await addCard('system','— Starting new enquiry —',300);
     updateFlow('main',1);
-    await addCard('bot','Are you calling as an <strong>Individual</strong>, on behalf of an <strong>Employer</strong>, or as a <strong>Training Provider</strong>?<br>Press <strong>1</strong> for Individual &nbsp;·&nbsp; <strong>2</strong> for Employer &nbsp;·&nbsp; <strong>3</strong> for Training Provider.',500);
-    showKeypad(['1','2','3']);
-    document.getElementById('kpad-hint').textContent='Press 1, 2 or 3';
+    await addCard('bot','Are you calling as an <strong>Individual</strong>, on behalf of an <strong>Employer</strong>, or as a <strong>Training Provider</strong>?',500);
+    setReplies([
+      {label:'Individual (voice response)',value:'acc_individual'},
+      {label:'Employer (voice response)',value:'acc_employer'},
+      {label:'Training Provider (voice response)',value:'acc_tp'}
+    ]);
     S.node='acc_select';
     return;
   }
 
   if(S.node==='main_menu'||S.node==='menu'){
-    const known=['balance','appeal','career','ef','voicemail','sdl','sfec','tp_attendance','other'];
+    const known=['balance','appeal','career','ef','voicemail','sdl','sfec','tp_attendance','tp_programme','tp_other','other','free_text'];
     if(known.includes(value)){
+      if(value==='free_text'){
+        await addCard('bot','Please describe your enquiry.',400);
+        S.node='free_text_input';
+        showInput('Describe your enquiry\u2026');
+        return;
+      }
       await showTriageHold();
-      await new Promise(r=>setTimeout(r,4500));
+      await new Promise(r=>setTimeout(r,2000));
       hideTriageHold();
       if(value==='balance') await doBalance();
       else if(value==='appeal') await doAppeal();
@@ -769,6 +939,8 @@ async function handleReply(value, label){
       else if(value==='sdl') await doSDL();
       else if(value==='sfec') await doSFEC();
       else if(value==='tp_attendance') await doTP();
+      else if(value==='tp_programme') { S.scenario='tp'; S.tpCaseType='Programme Enquiry'; updateFlow('tp',2); await addCard('system',`Intent: <strong>Programme Enquiry</strong> · Segment: ${S.accType}`,0); await doTPCallback('Programme Enquiry'); }
+      else if(value==='tp_other') { S.scenario='tp'; S.tpCaseType='Other Enquiry'; updateFlow('tp',2); await addCard('system',`Intent: <strong>General Enquiry</strong> · Segment: ${S.accType}`,0); await doTPCallback('Other Enquiry'); }
       else await doOther();
     } else {
       await addCard('bot','I\'m sorry, I didn\'t quite catch that. Please select an option.',400);
@@ -777,138 +949,315 @@ async function handleReply(value, label){
     return;
   }
 
-  if(S.node==='appeal_course'){
-    S.courseName=label;
-    await addCard('bot',`Course name noted: <strong>"${label}"</strong>. This has been flagged as a <strong>Complex</strong> case and will be reviewed by an SWDA officer.`,400);
-    await addCard('bot','How would you like to proceed?',700);
-    setReplies([
-      {label:'Schedule a Callback',value:'callback'},
-      {label:'Connect to Live Chat',value:'livechat'},
-      {label:'Hold for Next Available Officer',value:'wait'}
-    ]);
-    S.node='appeal_channel';
-    return;
-  }
-  if(S.node==='appeal_channel'){
-    let r='';
-    if(value==='callback') r='A callback has been scheduled. An SWDA officer will contact you within <strong>2 working days</strong>. A case reference will be sent to your registered email.';
-    else if(value==='livechat') r='Connecting you to a live chat officer now. Estimated wait: <strong>3 minutes</strong>.';
-    else r='You are in the queue. Your position: <strong>#4</strong>. Estimated wait: <strong>12 minutes</strong>.';
-    await addCard('bot',r,400);
-    await endFlow();
-    return;
-  }
-  if(S.node==='career_portal'){
-    if(value==='Yes'){
-      await addCard('bot','Good. Please look out for the Career Matching section — it shows you courses aligned to your target role.',400);
-      await addCard('bot','Would you like to speak with a Career Development Officer for personalised guidance?',700);
-      S.node='career_agent';
-      setReplies([{label:'Yes, connect me',value:'agent_yes'},{label:'No, that\'s all',value:'agent_no'}]);
+  if(S.node==='balance_proceed'){
+    if(value==='bal_proceed_yes'){
+      await addCard('bot','Before we proceed with Singpass authentication, please confirm if your full name is Lim Kee Weil.',400);
+      setReplies([{label:'Positive voice response',value:'bal_name_yes'},{label:'Negative voice response',value:'bal_name_no'}]);
+      S.node='balance_name_confirm';
     } else {
-      await addCard('bot','No problem. I\'ll send a personalised list of recommended courses to your registered email address. Please hold a moment.',400);
-      await addCard('bot','What email should we send this to?',600);
-      S.node='career_email';
-      showInput('Enter your email address…');
+      await endFlow();
     }
     return;
   }
-  if(S.node==='career_agent'||S.node==='career_agent2'){
-    if(value==='agent_yes') await addCard('bot','Connecting you to a Career Development Officer. Estimated wait: <strong>5 minutes</strong>.',400);
-    else await addCard('bot','Noted. Best of luck with your upskilling pathway. We\'ll send your course list shortly.',400);
-    await endFlow(); return;
+  if(S.node==='balance_name_confirm'){
+    if(value==='bal_name_yes'){
+      await doBalanceSingpass();
+    } else {
+      await addCard('bot','We are unable to process your request. Please visit the MySkillsFuture portal to check your SkillsFuture Credit balance.',400);
+      await endFlow();
+    }
+    return;
+  }
+  if(S.node==='balance_breakdown'){
+    if(value==='bal_yes'){
+      await addCard('bot','Of your $1,500 balance, $500 has no expiry. The remaining $1,000 is valid until 31 December 2028 only.',400);
+    }
+    await endFlow();
+    return;
+  }
+
+  if(S.node==='callback_confirm_new'){
+    if(value==='ccn_yes'){
+      const fmt=S.pendingNumber.slice(0,4)+' '+S.pendingNumber.slice(4);
+      S.individualCallbackNum=fmt;
+      await addCard('bot','Please describe your reason for calling in detail, to help us serve you better when we call back.',400);
+      showInput('Describe your reason…');
+      S.node='individual_notes';
+    } else {
+      await addCard('bot','Please key in your preferred contact number, then press <strong>#</strong> to confirm.',400);
+      showContactKeypad();
+      S.node='callback_new_number';
+    }
+    return;
+  }
+  if(S.node==='callback_confirm_existing'){
+    if(value==='cb_yes'){
+      const fmt=S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4);
+      S.individualCallbackNum=fmt;
+      await addCard('bot','Please describe your reason for calling in detail, to help us serve you better when we call back.',400);
+      showInput('Describe your enquiry…');
+      S.node='individual_notes';
+    } else {
+      await addCard('bot','Please key in your preferred contact number, then press <strong>#</strong> to confirm.',400);
+      showContactKeypad();
+      S.node='callback_new_number';
+    }
+    return;
+  }
+  if(S.node==='end_query'){
+    if(value==='eq_yes'){
+      await showMainMenu();
+    } else {
+      await addCard('bot','Thank you for calling. Goodbye!',400);
+      await addCard('system','— Session ended —',600);
+      S.node='done'; wave(false);
+    }
+    return;
+  }
+  if(S.node==='career_cdo'){
+    if(value==='career_yes'){
+      S.flowLabel='Career Advisory';
+      await addCard("bot","To connect with an officer — say 'callback' to schedule a callback, 'WhatsApp' for live chat, or 'hold' to stay on the line for the next available officer.",400);
+      setReplies([
+      {label:'Callback (voice response)',value:'oc_callback'},
+      {label:'WhatsApp (voice response)',value:'oc_whatsapp'},
+      {label:'Hold (voice response)',value:'oc_hold'}
+    ]);
+      S.node='officer_connect';
+    } else {
+      await endFlow();
+    }
+    return;
+  }
+  if(S.node==='ef_reschedule_confirm'){
+    const fmt=S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4);
+    if(value==='ef_resched_yes'){
+      await addCard('bot',`Done. A rescheduling link has been sent to <strong>${fmt}</strong>. The link is valid for <strong>48 hours</strong>.`,400);
+      await addCustomCard(`<div class="ef-card">
+        <div class="ef-header">CRM Note — SMS Scheduled</div>
+        <div class="ef-row"><span class="ef-key">Action</span><span class="ef-val">SMS scheduled</span></div>
+        <div class="ef-row"><span class="ef-key">Sent to</span><span class="ef-val">${fmt}</span></div>
+        <div class="ef-row"><span class="ef-key">Content</span><span class="ef-val">Appointment rescheduling link</span></div>
+        <div class="ef-row"><span class="ef-key">Link expiry</span><span class="ef-val">48 hours</span></div>
+        <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Sent ✓</span></div>
+      </div>`,400);
+      await endFlow();
+    } else {
+      await addCard('bot','Please key in your preferred contact number, then press <strong>#</strong> to confirm.',400);
+      showContactKeypad();
+      S.node='ef_reschedule_new_number';
+    }
+    return;
   }
   if(S.node==='ef_action'){
-    if(value==='confirm'){
-      await addCard('success','Your appointment on <strong>Wednesday 14 May at 10:00 AM</strong> with Officer Priya has been confirmed. A reminder SMS will be sent the day before.',400);
-      setTimeout(()=>showEmailNotif(null,'Appointment Confirmation — SWDA','Career coaching session confirmed: 14 May, 10:00 AM'),800);
+    if(value==='reschedule'){
+      await addCard('system','Intent: <strong>Appointment Reschedule</strong> · Segment: Individual',0);
+      const fmt=S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4);
+      await addCard('bot',`I'll send you a rescheduling link. I can see you're calling from <strong>${fmt}</strong>. Would you like us to send it to this number?`,400);
+      setReplies([{label:'Positive voice response',value:'ef_resched_yes'},{label:'Negative voice response',value:'ef_resched_no'}]);
+      S.node='ef_reschedule_confirm';
+    } else if(value==='cancel'){
+      await addCard('bot','Just to confirm, you would like to cancel your session with Officer Priya on Wednesday, 14 May at 10:00 AM. Is that correct?',400);
+      setReplies([{label:'Positive voice response',value:'ef_cancel_yes'},{label:'Negative voice response',value:'ef_cancel_no'}]);
+      S.node='ef_cancel_confirm';
+    } else if(value==='ef_main_menu'){
+      await showMainMenu();
+    }
+    return;
+  }
+  if(S.node==='ef_cancel_confirm'){
+    if(value==='ef_cancel_yes'){
+      await addCard('bot','Your session with Officer Priya on Wednesday, 14 May at 10:00 AM has been cancelled. A confirmation will be sent to your registered contact.',400);
       await endFlow();
-    } else if(value==='reschedule'){
-      await addCard('bot','I can check Officer Priya\'s availability for you. Please select a new date and time:',400);
-      renderDateCard();
-      S.node='ef_pick';
     } else {
-      await addCard('success','Your appointment on <strong>14 May</strong> has been cancelled. A confirmation will be sent to your registered contact.',400);
-      await endFlow();
+      await addCard('bot','No problem.',300);
+      await addCard('bot','Our records show a session with Officer Priya on Wednesday, 14 May at 10:00 AM. Would you like to reschedule, cancel, or return to the main menu?',400);
+      setReplies([
+        {label:'Reschedule (voice response)',value:'reschedule'},
+        {label:'Cancel (voice response)',value:'cancel'},
+        {label:'Return to main menu (voice response)',value:'ef_main_menu'}
+      ]);
+      S.node='ef_action';
     }
     return;
   }
   if(S.node==='sdl_action'){
     if(value==='compute'){
-      await addCard('bot','I can help with an SDL computation estimate. Please state your total monthly payroll amount after the tone.',400);
+      await addCard('system','Intent: <strong>SDL Computation</strong> · Segment: Employer · Branch: estimate',0);
+      await addCard('bot','I can help with an SDL computation estimate. Please key in your total monthly payroll amount, then press <strong>#</strong> to confirm.',400);
+      S.pendingDigits='';
+      showKeypad([]);
+      document.getElementById('kpad-hint').innerHTML='Key in payroll amount, press <strong>#</strong> to confirm';
       S.node='sdl_payroll';
-      showInput('Enter monthly payroll e.g. 50000');
     } else {
-      await addCard('bot','SDL appeals require officer review. I\'ll create a case now. Your case reference will be emailed to you within <strong>1 working day</strong>.',400);
-      await endFlow();
-    }
-    return;
-  }
-  if(S.node==='sdl_payroll'){
-    await handleReply(value,value); return;
-  }
-
-  if(S.node==='sfec_q'){
-    if(value==='sfec_specific'){
-      await addCard('bot','Please briefly describe your SFEC question:',400);
-      S.node='sfec_detail'; showInput('Describe your SFEC question…');
-    } else {
-      await addCard('bot','Noted. I’ve registered your enquiry. An SFEC officer will follow up within <strong>2 working days</strong>.',400);
-      await addCustomCard(`<div class="ef-card">
-        <div class="ef-header">Case Created — SFEC Enquiry</div>
-        <div class="ef-row"><span class="ef-key">Case ID</span><span class="ef-val blue">CRM-2026-59104</span></div>
-        <div class="ef-row"><span class="ef-key">Segment</span><span class="ef-val">Employer</span></div>
-        <div class="ef-row"><span class="ef-key">Follow-up SLA</span><span class="ef-val">2 working days</span></div>
-        <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
-      </div>`,400);
-      updateFlow('sfec',4);
-      await endFlow();
+      await addCard('system','Intent: <strong>SDL Appeal</strong> · Requires officer review',0);
+      await addCard('bot','I\'ll need to connect you with an officer to assist with your SDL appeal.',400);
+      await addCard("bot","To connect with an officer — say 'callback' to schedule a callback, 'WhatsApp' for live chat, or 'hold' to stay on the line for the next available officer.",400);
+      setReplies([
+      {label:'Callback (voice response)',value:'oc_callback'},
+      {label:'WhatsApp (voice response)',value:'oc_whatsapp'},
+      {label:'Hold (voice response)',value:'oc_hold'}
+    ]);
+      S.node='officer_connect';
     }
     return;
   }
 
-  await addCard('bot','I’m sorry, I didn’t understand that. Let me bring you back to the main menu.',400);
+  if(S.node==='tp_callback_confirm'){
+    const fmt=S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4);
+    if(value==='tp_cb_yes'){
+      S.tpCallbackNum=fmt;
+      await addCard('bot','Please describe your reason for calling in detail, to help us serve you better when we call back.',400);
+      showInput('Describe your enquiry…');
+      S.node='tp_notes';
+    } else {
+      await addCard('bot','Please key in your preferred contact number, then press <strong>#</strong> to confirm.',400);
+      showContactKeypad();
+      S.node='tp_callback_new_number';
+    }
+    return;
+  }
+  if(S.node==='officer_connect'||S.node==='sfec_officer_connect'||S.node==='tp_officer_connect'){
+    const fmt=S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4);
+    if(value==='oc_callback'){
+      if(S.node==='sfec_officer_connect'){
+        await addCard('bot',`I can see you're calling from <strong>${fmt}</strong>. Would you like us to call you back on this number?`,400);
+        setReplies([{label:'Positive voice response',value:'sfec_cb_yes'},{label:'Negative voice response',value:'sfec_cb_no'}]);
+        S.node='sfec_callback_confirm';
+      } else if(S.node==='tp_officer_connect'){
+        await addCard('bot',`I can see you're calling from <strong>${fmt}</strong>. Would you like us to call you back on this number?`,400);
+        setReplies([{label:'Positive voice response',value:'tp_cb_yes'},{label:'Negative voice response',value:'tp_cb_no'}]);
+        S.node='tp_callback_confirm';
+      } else {
+        await addCard('bot',`I can see you're calling from <strong>${fmt}</strong>. Would you like us to call you back on this number?`,400);
+        setReplies([{label:'Positive voice response',value:'cb_yes'},{label:'Negative voice response',value:'cb_no'}]);
+        S.node='callback_confirm_existing';
+      }
+    } else if(value==='oc_whatsapp'){
+      await addCard('bot','Connecting you to a live chat officer via WhatsApp. Estimated wait: <strong>3 minutes</strong>.',400);
+      await endFlow();
+    } else if(value==='oc_hold'){
+      await addCard('bot','You are in the queue. Your position: <strong>#4</strong>. Estimated wait: <strong>12 minutes</strong>.',400);
+      const holdCard=document.createElement('div');
+      holdCard.className='ivr-card triage';
+      holdCard.innerHTML=`
+        <div class="triage-music">🎵</div>
+        <div class="triage-title">Playing hold music…</div>
+        <div class="triage-sub">An officer will be with you shortly</div>
+        <div class="triage-dots">
+          <div class="triage-dot"></div><div class="triage-dot"></div>
+          <div class="triage-dot"></div><div class="triage-dot"></div>
+        </div>`;
+      const display=document.getElementById('ivr-display');
+      if(display){ display.appendChild(holdCard); scrollDown(); }
+      S.node='done';
+    }
+    return;
+  }
+  if(S.node==='sfec_callback_confirm'){
+    const fmt=S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4);
+    if(value==='sfec_cb_yes'){
+      await addCard('bot','Is there anything specific you\'d like to flag for the officer?',400);
+      showInput('Describe your SFEC question…');
+      S.node='sfec_notes';
+    } else {
+      await addCard('bot','Please key in your preferred contact number, then press <strong>#</strong> to confirm.',400);
+      showContactKeypad();
+      S.node='sfec_callback_new_number';
+    }
+    return;
+  }
+  await addCard('bot','I\'m sorry, I didn\'t understand that. Let me bring you back to the main menu.',400);
   S.node='menu';
   setTimeout(showMainMenu,600);
 }
 
 async function doBalance(){
   S.scenario='balance';
+  await addCard('system',`Intent: <strong>SkillsFuture Credit Balance</strong> · Segment: ${S.accType}`,0);
   updateFlow('balance',2);
-  await addCard('bot','I can help you check your SkillsFuture Credit (SFC) balance.',400);
-  await addCard('bot','To retrieve your account details, I need to verify your identity via <strong>Singpass</strong>. Please approve the notification on your Singpass app, or scan the QR code.',700);
-  setTimeout(()=>{ document.getElementById('sp-overlay').style.display='flex'; },900);
+  await addCard('bot','I can help you check your SkillsFuture Credit balance. Singpass authentication is required. Would you like to proceed?',400);
+  setReplies([{label:'Positive voice response',value:'bal_proceed_yes'},{label:'Negative voice response',value:'bal_proceed_no'}]);
+  S.node='balance_proceed';
+}
+
+async function doBalanceSingpass(){
+  await addCard('bot','I have sent a notification to your Singpass app. Please approve the notification.',400);
+  await new Promise(r=>setTimeout(r,600));
+  const approvalCard=document.createElement('div');
+  approvalCard.className='ivr-card triage';
+  approvalCard.id='sp-approval-card';
+  approvalCard.innerHTML=`
+    <div class="triage-music">🔔</div>
+    <div class="triage-title">Waiting for Singpass approval…</div>
+    <div class="triage-sub">Please approve the notification on your Singpass app</div>
+    <div class="triage-dots">
+      <div class="triage-dot"></div><div class="triage-dot"></div>
+      <div class="triage-dot"></div><div class="triage-dot"></div>
+    </div>`;
+  const display=document.getElementById('ivr-display');
+  if(display){ display.appendChild(approvalCard); scrollDown(); }
+  await new Promise(r=>setTimeout(r,2000));
+  const ac=document.getElementById('sp-approval-card');
+  if(ac) ac.remove();
+  updateFlow('balance',3);
+  await addCard('system','✓ Singpass authentication successful',0);
+  const holdCard=document.createElement('div');
+  holdCard.className='ivr-card triage';
+  holdCard.id='balance-hold-card';
+  holdCard.innerHTML=`
+    <div class="triage-music">🔍</div>
+    <div class="triage-title">Retrieving your SFC balance…</div>
+    <div class="triage-sub">Connecting to SWDA backend — please hold</div>
+    <div class="triage-dots">
+      <div class="triage-dot"></div><div class="triage-dot"></div>
+      <div class="triage-dot"></div><div class="triage-dot"></div>
+    </div>`;
+  if(display){ display.appendChild(holdCard); scrollDown(); }
+  await new Promise(r=>setTimeout(r,2000));
+  const hc=document.getElementById('balance-hold-card');
+  if(hc) hc.remove();
+  updateFlow('balance',4);
+  await addCard('bot','Identity verified. Your total SkillsFuture Credit balance is <strong>$1,500</strong>. Would you like me to go through the details of the balance?',400);
+  setReplies([{label:'Positive voice response',value:'bal_yes'},{label:'Negative voice response',value:'bal_no'}]);
+  S.node='balance_breakdown';
 }
 
 async function doAppeal(){
   S.scenario='appeal';
+  S.flowLabel='Course Appeal';
+  await addCard('system',`Intent: <strong>Course Appeal</strong> · Segment: ${S.accType}`,0);
   updateFlow('appeal',2);
-  await addCard('bot','I can help with that. Appeals for courses not currently on the approved list require manual review by an SWDA officer.',400);
-  await addCard('bot','Please provide the full name of the course you wish to submit an appeal for:',800);
-  S.node='appeal_course';
-  showInput('Enter course name…');
+  await addCard("bot","To connect with an officer — say 'callback' to schedule a callback, 'WhatsApp' for live chat, or 'hold' to stay on the line for the next available officer.",400);
+  setReplies([
+      {label:'Callback (voice response)',value:'oc_callback'},
+      {label:'WhatsApp (voice response)',value:'oc_whatsapp'},
+      {label:'Hold (voice response)',value:'oc_hold'}
+    ]);
+  S.node='officer_connect';
 }
 
 async function doCareer(){
   S.scenario='career';
+  await addCard('system',`Intent: <strong>Career Advisory</strong> · Segment: ${S.accType}`,0);
   updateFlow('career',2);
-  await addCard('bot','I can connect you with our Career Advisory service. This covers career planning, upskilling pathways, and relevant SkillsFuture programmes.',400);
-  await addCard('bot','Have you visited <strong>MySkillsFuture</strong> (myskillsfuture.gov.sg) to explore career pathways and available courses?',800);
-  S.node='career_portal';
-  setReplies([{label:'Yes, I have',value:'Yes'},{label:'Not yet',value:'No'}]);
+  await addCard('bot','For career options and available courses, you can browse the <strong>MySkillsFuture</strong> website for a more fruitful session.',400);
+  await addCard('bot','Would you like to speak with a <strong>Career Development Officer</strong> now?',600);
+  setReplies([{label:'Positive voice response',value:'career_yes'},{label:'Negative voice response',value:'career_no'}]);
+  S.node='career_cdo';
 }
 
 async function doEF(){
   S.scenario='ef';
   updateFlow('ef',1);
-  await addCard('system','— AI outbound call placed by EF team —',200);
-  await addCard('bot','Hello, may I speak with Devin? This is Workforce Singapore calling regarding your upcoming career coaching appointment.',600);
+  await addCard('system','— Call connected —',200);
   updateFlow('ef',2);
-  await addCard('bot','You have a career coaching session with <strong>Officer Priya</strong> scheduled for <strong>Wednesday, 14 May at 10:00 AM</strong>. Would you like to keep this appointment?',1000);
+  await addCard('bot','I can help you manage your career coaching appointment. Our records show a session with Officer Priya on Wednesday, 14 May at 10:00 AM. Would you like to reschedule, cancel, or return to the main menu?',600);
   S.node='ef_action';
   setReplies([
-    {label:'Yes, confirm it',value:'confirm'},
-    {label:'I need to reschedule',value:'reschedule'},
-    {label:'Please cancel it',value:'cancel'}
+    {label:'Reschedule (voice response)',value:'reschedule'},
+    {label:'Cancel (voice response)',value:'cancel'},
+    {label:'Return to main menu (voice response)',value:'ef_main_menu'}
   ]);
 }
 
@@ -926,36 +1275,74 @@ async function doSDL(){
 
 async function doSFEC(){
   S.scenario='sfec';
-  await addCard('bot','SkillsFuture Enterprise Credit (SFEC) enquiries are handled by our employer services team.',400);
-  await addCard('bot','I\'ll create a case and an officer will follow up with you within <strong>2 working days</strong>. Is there anything specific you\'d like to flag?',700);
-  setReplies([{label:'Just follow up with me',value:'done'},{label:'I have a specific question',value:'other'}]);
-  S.node='sfec_done';
+  S.flowLabel='SFEC Enquiry';
+  updateFlow('sfec',2);
+  await addCard('bot','SkillsFuture Enterprise Credit (SFEC) enquiries are handled by our employer services team. An officer will follow up with you.',400);
+  await addCard("bot","To connect with an officer — say 'callback' to schedule a callback, 'WhatsApp' for live chat, or 'hold' to stay on the line for the next available officer.",400);
+  setReplies([
+      {label:'Callback (voice response)',value:'oc_callback'},
+      {label:'WhatsApp (voice response)',value:'oc_whatsapp'},
+      {label:'Hold (voice response)',value:'oc_hold'}
+    ]);
+  S.node='sfec_officer_connect';
 }
 
 async function doTP(){
   S.scenario='tp';
   updateFlow('tp',2);
   await showTriageHold('Classifying TP intent…');
-  await new Promise(r=>setTimeout(r,1400));
+  await new Promise(r=>setTimeout(r,1600));
   hideTriageHold();
   await addCard('system','Intent: <strong>e-Attendance Appeal</strong> · Segment: Training Provider · Direct routing: TPGateway',0);
-  await addCard('bot','I can help with e-Attendance appeals. These are reviewed by the SWDA TPGateway team — no transfer required.',400);
-  await addCard('bot','Please provide the <strong>course run ID</strong> or <strong>course title</strong> for the attendance record:',700);
-  S.node='tp_course';
-  showInput('Enter course run ID or title…');
+  await doTPCallback('e-Attendance Appeal');
+}
+
+async function doTPCallback(caseType){
+  const introMap={
+    'e-Attendance Appeal': 'I\'ll need to connect you with an officer to assist with your e-Attendance appeal.',
+    'Programme Enquiry':   'I\'ll need to connect you with an officer to assist with your programme enquiry.',
+    'Other Enquiry':       'I\'ll need to connect you with an officer for your enquiry.'
+  };
+  await addCard('bot', introMap[caseType]||'I\'ll need to connect you with an officer.',400);
+  await addCard("bot","To connect with an officer — say 'callback' to schedule a callback, 'WhatsApp' for live chat, or 'hold' to stay on the line for the next available officer.",400);
+  setReplies([
+      {label:'Callback (voice response)',value:'oc_callback'},
+      {label:'WhatsApp (voice response)',value:'oc_whatsapp'},
+      {label:'Hold (voice response)',value:'oc_hold'}
+    ]);
+  S.tpCaseType=caseType;
+  S.flowLabel=caseType;
+  S.node='tp_officer_connect';
+}
+
+async function doTPCaseClose(){
+  const caseType=S.tpCaseType||'e-Attendance Appeal';
+  const notes=S.tpNotes||'';
+  await addCard('bot','Got it. A case has been created and an officer will follow up within <strong>3 working days</strong>.',400);
+  await addCustomCard(`<div style=\"margin:6px 4px\"><div style=\"font-size:10px;color:var(--gy4);text-align:center;margin-bottom:6px;letter-spacing:0.3px\">— CRM · case created —</div><div style=\"padding:0 2px\"><div style=\"display:flex;justify-content:space-between;padding:2px 0;border-bottom:0.5px solid var(--gy2)\"><span style=\"font-size:11px;color:var(--gy4)\">Flow</span><span style=\"font-size:11px;color:var(--gy7)\">${S.accType} - ${caseType} - Callback Request</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Case ID</span><span style=\"font-size:11px;color:var(--gy7)\">CRM-2026-61207</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Callback number</span><span style=\"font-size:11px;color:var(--gy7)\">${S.tpCallbackNum}</span></div>${notes?`<div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Notes</span><span style=\"font-size:11px;color:var(--gy7)\">${notes.length>42?notes.substring(0,42)+'…':notes}</span></div>`:''}</div></div>`,400);
+  updateFlow('tp',4);
+  await endFlow();
 }
 
 async function doOther(){
-  await addCard('bot','I\'ll connect you to the next available officer. Please hold.',400);
-  await new Promise(r=>setTimeout(r,800));
-  await addCard('bot','Estimated wait time: <strong>8 minutes</strong>. You may also submit your enquiry via the <strong>SWDA Service Portal</strong> at service-portal.skillsfuture.gov.sg.',600);
-  await endFlow();
+  S.flowLabel='Other Enquiry';
+  await addCard('system',`Intent: <strong>General Enquiry</strong> · Segment: ${S.accType}`,0);
+  await addCard('bot','I\'ll need to connect you with an officer for your enquiry.',400);
+  await addCard("bot","To connect with an officer — say 'callback' to schedule a callback, 'WhatsApp' for live chat, or 'hold' to stay on the line for the next available officer.",400);
+  setReplies([
+      {label:'Callback (voice response)',value:'oc_callback'},
+      {label:'WhatsApp (voice response)',value:'oc_whatsapp'},
+      {label:'Hold (voice response)',value:'oc_hold'}
+    ]);
+  S.node='officer_connect';
 }
 
 async function doVoicemail(){
   S.scenario='voicemail';
+  S.flowLabel='Voicemail';
   updateFlow('voicemail',0);
   await addCard('system','— All lines busy. Queue threshold reached. —',200);
+  await addCard('system',`Intent: <strong>Voicemail</strong> · Segment: ${S.accType} · Surge routing`,0);
   updateFlow('voicemail',1);
   await addCard('bot','Thank you for calling Skills and Workforce Development Agency. We are currently experiencing high call volumes. Rather than ask you to call back, you may leave a <strong>voicemail</strong> and we will follow up with you.',500);
   await addCard('bot','After the tone, please state your <strong>name</strong>, <strong>NRIC</strong>, and <strong>your enquiry</strong>. Your message will be transcribed and a case created automatically.',700);
@@ -986,15 +1373,7 @@ async function doVoicemail(){
   await addCard('system','— AI transcription complete —',800);
   updateFlow('voicemail',4);
   await addCard('success','Case created automatically. <strong>Case ID: CRM-2026-48291</strong>. Assigned to: SkillsFuture Credit team. Citizen will be contacted within <strong>1 working day</strong>.',600);
-  await addCustomCard(`<div class="ef-card">
-    <div class="ef-header">Auto-generated CRM Case</div>
-    <div class="ef-row"><span class="ef-key">Case ID</span><span class="ef-val blue">CRM-2026-48291</span></div>
-    <div class="ef-row"><span class="ef-key">Caller</span><span class="ef-val">Aisyah · NRIC ends 234A</span></div>
-    <div class="ef-row"><span class="ef-key">Intent</span><span class="ef-val">SFC Appeal Status</span></div>
-    <div class="ef-row"><span class="ef-key">Programme</span><span class="ef-val">Advanced Cert in Learning &amp; Performance</span></div>
-    <div class="ef-row"><span class="ef-key">Priority</span><span class="ef-val">Callback within 1 working day</span></div>
-    <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
-  </div>`,400);
+  await addCustomCard(`<div style=\"margin:6px 4px\"><div style=\"font-size:10px;color:var(--gy4);text-align:center;margin-bottom:6px;letter-spacing:0.3px\">— CRM · case created —</div><div style=\"padding:0 2px\"><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Flow</span><span style=\"font-size:11px;color:var(--gy7)\">${S.accType} — Voicemail</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Case ID</span><span style=\"font-size:11px;color:var(--gy7)\">CRM-2026-48291</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Caller</span><span style=\"font-size:11px;color:var(--gy7)\">Aisyah · NRIC ends 234A</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Intent</span><span style=\"font-size:11px;color:var(--gy7)\">SFC Appeal Status</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Programme</span><span style=\"font-size:11px;color:var(--gy7)\">Advanced Cert in Learning &amp; Performance</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Priority</span><span style=\"font-size:11px;color:var(--gy7)\">Callback within 1 working day</span></div></div>`,400);
   await endFlow();
 }
 
@@ -1055,55 +1434,12 @@ async function confirmAppt(){
 
 async function endFlow(){
   updateFlow(S.scenario||'main',4);
-  await addCard('system','— Session ended —',600);
-  setReplies([{label:'Start new enquiry',value:'new_query'}]);
-  S.node='done'; wave(false);
+  await addCard('bot','Is there anything else I can help you with?',600);
+  setReplies([{label:'Positive voice response',value:'eq_yes'},{label:'Negative voice response',value:'eq_no'}]);
+  S.node='end_query'; wave(false);
 }
 
 window.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('sp-confirm').addEventListener('click', async function(){
-    const nric=document.getElementById('sp-nric').value.trim();
-    if(!nric){ document.getElementById('sp-nric').style.borderColor='#b91c1c'; return; }
-    document.getElementById('sp-overlay').style.display='none';
-    document.getElementById('sp-nric').value='';
-    updateFlow('balance',3);
-    await addCard('system','✓ Singpass authentication successful',0);
-    const holdCard=document.createElement('div');
-    holdCard.className='ivr-card triage';
-    holdCard.id='balance-hold-card';
-    holdCard.innerHTML=`
-      <div class="triage-music">🔍</div>
-      <div class="triage-title">Retrieving your SFC balance…</div>
-      <div class="triage-sub">Connecting to SkillsFuture backend — please hold</div>
-      <div class="triage-dots">
-        <div class="triage-dot"></div><div class="triage-dot"></div>
-        <div class="triage-dot"></div><div class="triage-dot"></div>
-      </div>`;
-    const display=document.getElementById('ivr-display');
-    if(display){ display.appendChild(holdCard); scrollDown(); }
-    await new Promise(r=>setTimeout(r,4000));
-    const hc=document.getElementById('balance-hold-card');
-    if(hc) hc.remove();
-    updateFlow('balance',4);
-    await addCard('bot',`Identity verified. Here is your current <strong>SkillsFuture Credit</strong> balance as of today:`,400);
-    await addCustomCard(`<div class="bal-card">
-      <div class="bal-lbl">SkillsFuture Credit</div>
-      <div class="bal-amt">$500.00</div>
-      <div class="bal-sub">Opening credit — valid until 31 Dec 2025</div>
-      <div class="bal-row">
-        <span class="bal-row-lbl">One-off Top-Up</span>
-        <span class="bal-row-val">$488.00</span>
-      </div>
-      <div class="bal-row">
-        <span class="bal-row-lbl">Mid-Career Enhanced (MCES)</span>
-        <span class="bal-row-val">$4,500.00</span>
-      </div>
-      <div class="bal-id">${nric} · Individual Account</div>
-    </div>`,700);
-    await addCard('bot','Your credit can be used for SWDA-approved courses on the <strong>MySkillsFuture portal</strong> (myskillsfuture.gov.sg). A summary has been sent to your registered email.',900);
-    await endFlow();
-  });
-
   document.getElementById('snd-btn').addEventListener('click',submitText);
   document.getElementById('txt-inp').addEventListener('keydown',e=>{ if(e.key==='Enter') submitText(); });
 
@@ -1128,18 +1464,41 @@ async function submitText(){
   const inp=document.getElementById('txt-inp');
   const v=inp.value.trim(); if(!v) return;
   inp.value=''; hideInput();
-  if(S.node==='career_email'){
+  if(S.node==='free_text_input'){
     clearReplies();
     await addCard('user',v);
-    await addCard('bot',`A personalised list of SWDA-approved courses aligned to your career goals will be sent to <strong>${v}</strong> shortly.`,400);
-    setTimeout(()=>showEmailNotif(v,'SkillsFuture Course Recommendations','Your personalised course list is ready.'),800);
-    await addCard('bot','Would you like to speak with a Career Development Officer for further guidance?',800);
-    S.node='career_agent2';
-    setReplies([{label:'Yes, connect me',value:'agent_yes'},{label:'No, I\'m done',value:'agent_no'}]);
+    await showTriageHold();
+    await new Promise(r=>setTimeout(r,2000));
+    hideTriageHold();
+    await addCard('bot','This one deserves a closer look from our team. An officer will be able to assist you better.',400);
+    await doAppeal();
     return;
   }
-  if(S.node==='appeal_course'){
-    await handleReply(v,v); return;
+  if(S.node==='individual_notes'){
+    clearReplies();
+    await addCard('user',v);
+    const callbackNum=S.individualCallbackNum||(S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4));
+    await addCard('bot','Got it. A case has been created and an officer will call you back within <strong>2 working days</strong>.',400);
+      await addCustomCard(`<div style=\"margin:6px 4px\"><div style=\"font-size:10px;color:var(--gy4);text-align:center;margin-bottom:6px;letter-spacing:0.3px\">— CRM · case created —</div><div style=\"padding:0 2px\"><div style=\"display:flex;justify-content:space-between;padding:2px 0;border-bottom:0.5px solid var(--gy2)\"><span style=\"font-size:11px;color:var(--gy4)\">Flow</span><span style=\"font-size:11px;color:var(--gy7)\">${S.accType} - ${S.flowLabel} - Callback Request</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Case ID</span><span style=\"font-size:11px;color:var(--gy7)\">CRM-2026-72341</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Callback number</span><span style=\"font-size:11px;color:var(--gy7)\">${callbackNum}</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Notes</span><span style=\"font-size:11px;color:var(--gy7)\">${v.length>42?v.substring(0,42)+'…':v}</span></div></div>`,400);
+    await endFlow();
+    return;
+  }
+  if(S.node==='tp_notes'){
+    clearReplies();
+    await addCard('user',v);
+    S.tpNotes=v;
+    await doTPCaseClose();
+    return;
+  }
+  if(S.node==='sfec_notes'){
+    clearReplies();
+    await addCard('user',v);
+    const callbackNum=S.sfecCallbackNum||(S.callerNumber.slice(0,4)+' '+S.callerNumber.slice(4));
+    await addCard('bot','Got it. A case has been created and an officer will follow up within <strong>2 working days</strong>.',400);
+      await addCustomCard(`<div style=\"margin:6px 4px\"><div style=\"font-size:10px;color:var(--gy4);text-align:center;margin-bottom:6px;letter-spacing:0.3px\">— CRM · case created —</div><div style=\"padding:0 2px\"><div style=\"display:flex;justify-content:space-between;padding:2px 0;border-bottom:0.5px solid var(--gy2)\"><span style=\"font-size:11px;color:var(--gy4)\">Flow</span><span style=\"font-size:11px;color:var(--gy7)\">${S.accType} - ${S.flowLabel} - Callback Request</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Case ID</span><span style=\"font-size:11px;color:var(--gy7)\">CRM-2026-59106</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Callback number</span><span style=\"font-size:11px;color:var(--gy7)\">${callbackNum}</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Notes</span><span style=\"font-size:11px;color:var(--gy7)\">${v.length>42?v.substring(0,42)+'…':v}</span></div></div>`,400);
+    updateFlow('sfec',4);
+    await endFlow();
+    return;
   }
   if(S.node==='tp_course'){
     clearReplies();
@@ -1149,30 +1508,13 @@ async function submitText(){
     hideTriageHold();
     updateFlow('tp',3);
     await addCard('bot',`e-Attendance appeal registered for: <strong>"${v}"</strong>. Case routed directly to the TPGateway team — no transfer required.`,400);
-    await addCustomCard(`<div class="ef-card">
-      <div class="ef-header">Case Created — e-Attendance Appeal</div>
-      <div class="ef-row"><span class="ef-key">Course</span><span class="ef-val">${v}</span></div>
-      <div class="ef-row"><span class="ef-key">Segment</span><span class="ef-val">Training Provider</span></div>
-      <div class="ef-row"><span class="ef-key">Division</span><span class="ef-val blue">TPGateway (direct — no transfer)</span></div>
-      <div class="ef-row"><span class="ef-key">Acknowledgement</span><span class="ef-val">1 working day</span></div>
-      <div class="ef-row"><span class="ef-key">Decision SLA</span><span class="ef-val">3 working days</span></div>
-      <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
-    </div>`,400);
+      await addCustomCard(`<div style=\"margin:6px 4px\"><div style=\"font-size:10px;color:var(--gy4);text-align:center;margin-bottom:6px;letter-spacing:0.3px\">— CRM · case created —</div><div style=\"padding:0 2px\"><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Flow</span><span style=\"font-size:11px;color:var(--gy7)\">${S.accType} — e-Attendance Appeal</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Case ID</span><span style=\"font-size:11px;color:var(--gy7)\">CRM-2026-61208</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Course</span><span style=\"font-size:11px;color:var(--gy7)\">${v}</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Segment</span><span style=\"font-size:11px;color:var(--gy7)\">Training Provider</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Division</span><span style=\"font-size:11px;color:var(--gy7)\">TPGateway (direct — no transfer)</span></div></div>`,400);
     setTimeout(()=>showEmailNotif(null,'e-Attendance Appeal Received — SWDA',`Appeal for "${v}" received.`),700);
     updateFlow('tp',4);
     await endFlow();
     return;
   }
-  if(S.node==='sdl_payroll'){
-    clearReplies();
-    await addCard('user',v);
-    const payroll=parseFloat(v.replace(/[^0-9.]/g,''))||50000;
-    const sdl=Math.min(payroll*0.0025,11.25*Math.ceil(payroll/4500));
-    await addCard('bot',`Based on a monthly payroll of <strong>$${Number(payroll).toLocaleString()}</strong>, the estimated SDL contribution is <strong>$${(payroll*0.0025).toFixed(2)}</strong> per month (rate: 0.25%).`,400);
-    await addCard('bot','This is an estimate only. For a confirmed computation or to raise a formal query, please visit <strong>service-portal.skillsfuture.gov.sg</strong> or submit via the SDL e-Service portal.',700);
-    await endFlow();
-    return;
-  }
+
   if(S.node==='sdl_uen'){
     clearReplies();
     await addCard('user',v);
@@ -1182,7 +1524,7 @@ async function submitText(){
     holdEl.innerHTML='<div class="triage-music">🧮</div><div class="triage-title">Retrieving SDL assessment…</div><div class="triage-sub">Fetching Q1 2025 assessment for '+uen+'</div><div class="triage-dots"><div class="triage-dot"></div><div class="triage-dot"></div><div class="triage-dot"></div><div class="triage-dot"></div></div>';
     const disp=document.getElementById('ivr-display');
     if(disp){disp.appendChild(holdEl);scrollDown();}
-    await new Promise(r=>setTimeout(r,2800));
+    await new Promise(r=>setTimeout(r,2000));
     const hc=document.getElementById('sdl-hold'); if(hc) hc.remove();
     updateFlow('sdl',3);
     await addCard('bot',`UEN <strong>${uen}</strong> verified. Your SDL assessment for Q1 2025:`,300);
@@ -1204,13 +1546,7 @@ async function submitText(){
     clearReplies();
     await addCard('user',v);
     await addCard('bot','Your SFEC question has been added to the case. An SFEC officer will follow up within <strong>2 working days</strong>.',400);
-    await addCustomCard(`<div class="ef-card">
-      <div class="ef-header">Case Created — SFEC Enquiry</div>
-      <div class="ef-row"><span class="ef-key">Case ID</span><span class="ef-val blue">CRM-2026-59105</span></div>
-      <div class="ef-row"><span class="ef-key">Question</span><span class="ef-val">${v.length>42?v.substring(0,42)+'…':v}</span></div>
-      <div class="ef-row"><span class="ef-key">Follow-up SLA</span><span class="ef-val">2 working days</span></div>
-      <div class="ef-row"><span class="ef-key">Status</span><span class="ef-val green">Case created ✓</span></div>
-    </div>`,300);
+      await addCustomCard(`<div style=\"margin:6px 4px\"><div style=\"font-size:10px;color:var(--gy4);text-align:center;margin-bottom:6px;letter-spacing:0.3px\">— CRM · case created —</div><div style=\"padding:0 2px\"><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Flow</span><span style=\"font-size:11px;color:var(--gy7)\">${S.accType} - ${S.flowLabel} - Callback Request</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Case ID</span><span style=\"font-size:11px;color:var(--gy7)\">CRM-2026-59105</span></div><div style=\"display:flex;justify-content:space-between;padding:2px 0;\"><span style=\"font-size:11px;color:var(--gy4)\">Notes</span><span style=\"font-size:11px;color:var(--gy7)\">${v.length>42?v.substring(0,42)+'…':v}</span></div></div>`,300);
     updateFlow('sfec',4);
     await endFlow();
     return;
@@ -1238,7 +1574,7 @@ async function jumpTo(sc){
     S.lang='English'; S.accType='Individual';
     await addCard('system','— Call connected —',200);
     wave(true);
-    await addCard('bot','Thank you for calling <strong>SkillsFuture Singapore</strong> and <strong>Workforce Singapore</strong>.',600);
+    await addCard('bot','Thank you for calling <strong>Skills and Workforce Development Agency</strong>.',600);
     wave(false);
     await doVoicemail();
     return;
@@ -1271,7 +1607,7 @@ async function jumpTo(sc){
   updateFlow('main',0);
   await addCard('system','— Call connected —',200);
   wave(true);
-  await addCard('bot','Thank you for calling <strong>Skills and Workforce Development Agency</strong>. For English, please press <strong>1</strong>.<br>要选择<strong>华语</strong>，请按 <strong>2</strong>。',600);
+  await addCard('bot','Thank you for calling <strong>Skills and Workforce Development Agency</strong>. I\'m Helix Bot, your virtual assistant. For English, please press <strong>1</strong>.<br>要选择<strong>华语</strong>，请按 <strong>2</strong>。',600);
   wave(false);
   await new Promise(r=>setTimeout(r,600));
   await addCard('user','<strong>1</strong> — English',0);
@@ -1282,14 +1618,14 @@ async function jumpTo(sc){
   await addCard('user',`<strong>${segKeyMap[seg]}</strong> — ${seg}`,0);
   await addCard('system',`✓ Profile: ${seg}`,300);
   updateFlow('main',2);
-  await addCard('bot',`Thank you. You are connected as an <strong>${seg}</strong>. How may I assist you today?`,400);
   S.node='menu';
   setTimeout(async()=>{ await handleReply(sc, labelMap[sc]||sc); },800);
 }
 
 async function hardReset(greet=true){
   clearInterval(timerInt);
-  S={node:'dialing',lang:null,accType:null,scenario:null,courseName:'',selDate:null,selTime:null,timerSec:0};
+  focusPhone();
+  S={node:'dialing',lang:null,accType:null,scenario:null,selDate:null,selTime:null,timerSec:0,callerNumber:genCallerNumber(),pendingNumber:'',sfecCallbackNum:'',tpCallbackNum:'',tpNotes:'',keypadVisible:false,pendingDigits:'',individualCallbackNum:'',flowLabel:''};
   document.getElementById('ivr-display').innerHTML='';
   document.getElementById('qr-area').innerHTML='';
   document.getElementById('keypad-wrap').innerHTML='';
@@ -1306,7 +1642,7 @@ async function hardReset(greet=true){
 async function boot(){
   await addCard('system','— Call connected —',200);
   wave(true);
-  await addCard('bot','Thank you for calling <strong>Skills and Workforce Development Agency</strong>. For English, please press <strong>1</strong>.<br>要选择<strong>华语</strong>，请按 <strong>2</strong>。',800);
+  await addCard('bot','Thank you for calling <strong>Skills and Workforce Development Agency</strong>. I\'m Helix Bot, your virtual assistant. For English, please press <strong>1</strong>.<br>要选择<strong>华语</strong>，请按 <strong>2</strong>。',800);
   showKeypad(['1','2']);
   document.getElementById('kpad-hint').textContent='Press 1 for English, 2 for 华语';
   S.node='lang_select';
@@ -1328,16 +1664,15 @@ function showEmailNotif(toAddress, subject, preview){
 }
 
 function focusPhone(){
-  const PHONE_W=334,PHONE_H=702;
-  const TRACKER_W=220,GAP=32,PAD=48;
+  const PHONE_W=334,PHONE_H=720;
+  const TRACKER_W=0,GAP=0,PAD=32;
   const vw=window.innerWidth;
   const vh=window.innerHeight;
-  const availW=vw-TRACKER_W-GAP-PAD;
-  const availH=vh-PAD;
-  const maxW=Math.min(availW,554);
-  const scaleByW=maxW/PHONE_W;
-  const scaleByH=(vh-48)/PHONE_H;
-  const scale=Math.min(scaleByW,scaleByH,554/PHONE_W);
+  const availW=vw-PAD*2;
+  const availH=vh-PAD*2-40;
+  const scaleByW=availW/PHONE_W;
+  const scaleByH=availH/PHONE_H;
+  const scale=Math.min(scaleByW,scaleByH,1);
   document.documentElement.style.setProperty('--phone-scale',scale.toFixed(4));
   document.getElementById('root').classList.add('focused');
   document.body.classList.add('phone-focused');
